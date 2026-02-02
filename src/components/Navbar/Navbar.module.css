@@ -1,0 +1,21 @@
+.Nav {
+  background-color: #0E1426;
+  padding: 0.7%;
+  position: sticky; 
+  top: 0;
+  z-index: 1000;
+}
+
+.textColor {
+  color: #F5FFFA;
+  transition: color 0.5s; 
+}
+
+.textColorActive {
+  color: #FF3D00; 
+}
+
+.textColor:hover {
+  color: #006400; 
+  transition: color 0.5s; 
+}

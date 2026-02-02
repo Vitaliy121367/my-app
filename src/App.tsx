@@ -1,24 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './App.module.css';
+import { BrowserRouter, Route, Routes } from 'react-router';
+import { Games } from './pages/Games/Games';
+import { Register } from './pages/Register/Register';
+import { Login } from './pages/Login/Register';
+import { Game } from './pages/Game/Game';
+import { News } from './pages/News/News';
+import { Profile } from './pages/Profile/Profile';
+import { LastLoading } from './pages/LastLoading/LastLoading';
+import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Games />} />
+          <Route path="/game" element={<Game />} />
+          <Route path="/news" element={<News />} />
+          <Route path="/lastloading" element={<LastLoading />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

@@ -1,0 +1,9 @@
+.rowPadding {
+    padding: 1%;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}

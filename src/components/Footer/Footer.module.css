@@ -1,0 +1,10 @@
+.footer {
+    background-color: #0E1426;
+    padding: 0.7%;
+    top: 100%;
+    z-index: 1000;
+}
+
+.footerText{
+    color: #F5FFFA;
+}
