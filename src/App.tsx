@@ -3,12 +3,12 @@ import './App.module.css';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { Games } from './pages/Games/Games';
 import { Register } from './pages/Register/Register';
-import { Login } from './pages/Login/Register';
+import { Login } from './pages/Login/Login';
 import { Game } from './pages/Game/Game';
 import { News } from './pages/News/News';
 import { Profile } from './pages/Profile/Profile';
-import { LastLoading } from './pages/LastLoading/LastLoading';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
+import { LastLoaded } from './pages/LastLoaded/LastLoaded';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<Games />} />
           <Route path="/game" element={<Game />} />
           <Route path="/news" element={<News />} />
-          <Route path="/lastloading" element={<LastLoading />} />
+          <Route path="/lastloaded" element={<LastLoaded />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />

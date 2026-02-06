@@ -6,6 +6,7 @@
   z-index: 1000;
 }
 
+
 .textColor {
   color: #F5FFFA;
   transition: color 0.5s; 
@@ -18,4 +19,14 @@
 .textColor:hover {
   color: #006400; 
   transition: color 0.5s; 
+}
+
+.buttonBg {
+  background-color: #8a5cf68a;
+  transition: background-color 0.25s ease;
+}
+
+.buttonBg:active{
+  background: #7C3AED;
+  transition: background-color 0.25s ease;
 }

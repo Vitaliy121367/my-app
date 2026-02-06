@@ -1,0 +1,20 @@
+.title{
+  text-align: center;
+  color: red;
+  padding-top: 4.8%;
+}
+
+.loginContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.page {
+  min-height: 100vh;       
+  display: flex;
+  flex-direction: column;
+}
+.content {
+  flex: 1;                 
+}
