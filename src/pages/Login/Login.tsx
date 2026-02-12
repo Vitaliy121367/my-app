@@ -33,12 +33,12 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const [isFormValid, setIsFormValid] = useState(false);
-  const [error, setError] = useState(""); // <-- здесь храним сообщение об ошибке
+  const [error, setError] = useState(""); 
   const [formControls, setFormControls] = useState<FormControls>({
     email: {
       type: "email",
       label: "Email",
-      errorMessage: "Введите корректный email",
+      errorMessage: "Enter a valid email address",
       value: "",
       validation: { required: true, email: true },
       valid: false,
@@ -47,7 +47,7 @@ export const Login = () => {
     password: {
       type: "password",
       label: "Password",
-      errorMessage: "Минимум 5 символов",
+      errorMessage: "Minimum 5 characters",
       value: "",
       validation: { required: true, minLength: 5 },
       valid: false,
@@ -114,7 +114,7 @@ export const Login = () => {
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message); 
       } else {
-        setError("Произошла непредвиденная ошибка");
+        setError("Error logging in. Please try again.");
       }
     }
   };
@@ -147,7 +147,7 @@ export const Login = () => {
                   );
                 })}
 
-                {error && <div className="alert alert-danger mt-3">{error}</div>} {/* <-- выводим ошибку */}
+                {error && <div className="alert alert-danger mt-3">{error}</div>}
 
                 <Button type="submit" disabled={!isFormValid}>
                   Log In
