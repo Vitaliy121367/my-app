@@ -3,7 +3,6 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import styles from "./Login.module.css";
 import axios from "axios";
-import { saveToken } from "../../utils/auth";
 import { useState } from "react";
 import Input from "../../UI/Input/Input";
 import Button from "../../UI/Button/Button";
@@ -47,9 +46,9 @@ export const Login = () => {
     password: {
       type: "password",
       label: "Password",
-      errorMessage: "Minimum 5 characters",
+      errorMessage: "Minimum 6 characters",
       value: "",
-      validation: { required: true, minLength: 5 },
+      validation: { required: true, minLength: 6 },
       valid: false,
       touched: false,
     },
@@ -107,7 +106,7 @@ export const Login = () => {
         password: formControls.password.value,
       });
 
-      saveToken(res.data.token);
+      localStorage.setItem("token", res.data.token);
       console.clear();
       navigate("/");
     } catch (err: any) {

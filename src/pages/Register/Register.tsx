@@ -3,7 +3,6 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import styles from "./Register.module.css";
 import axios from "axios";
-import { saveToken } from "../../utils/auth";
 import { useState } from "react";
 import Input from "../../UI/Input/Input";
 import Button from "../../UI/Button/Button";
@@ -118,7 +117,6 @@ export const Register = () => {
         password: formControls.password.value,
       });
 
-      saveToken(res.data.token);
       console.clear();
       navigate("/");
     } catch (err: any) {
