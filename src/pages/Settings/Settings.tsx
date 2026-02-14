@@ -2,8 +2,9 @@ import { Outlet } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import { useState } from "react";
+import Loader from "../../components/Loader/Loader";
 
-export const NotFoundPage = () => {
+export const Settings = () => {
   const [bg, setBg] = useState<any>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}")["background"] : null);
     return (
         <div style={{
@@ -12,10 +13,9 @@ export const NotFoundPage = () => {
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                     minHeight: "100vh"
-                }}
-                >
+                }}>
             <Navbar />
-            <h2>Page Not Found</h2>
+            <h2>Settings</h2>
             <Footer />
         </div>
     )

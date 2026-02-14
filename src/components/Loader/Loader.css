@@ -23,9 +23,9 @@
 }
 
 @keyframes paddles {
-  0% { box-shadow: -50px -20px #ffffff, 50px 20px #ffffff; }
-  50% { box-shadow: -50px 16px #ffffff, 50px -20px #ffffff; }
-  100% { box-shadow: -50px -20px #ffffff, 50px 20px #ffffff; }
+  0% { box-shadow: -60px -20px #ffffff, 70px 20px #ffffff; }
+  50% { box-shadow: -60px 16px #ffffff, 70px -20px #ffffff; }
+  100% { box-shadow: -60px -20px #ffffff, 70px 20px #ffffff; }
 }
 
 @keyframes ballbounce {

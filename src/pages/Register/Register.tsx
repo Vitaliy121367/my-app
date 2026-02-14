@@ -166,7 +166,6 @@ export const Register = () => {
           </div>
         </div>
 
-        <Outlet />
       </div>
 
       <Footer />

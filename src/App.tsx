@@ -9,6 +9,7 @@ import { News } from './pages/News/News';
 import { Profile } from './pages/Profile/Profile';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { LastLoaded } from './pages/LastLoaded/LastLoaded';
+import { Settings } from './pages/Settings/Settings';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/game" element={<Game />} />
           <Route path="/news" element={<News />} />
           <Route path="/lastloaded" element={<LastLoaded />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />

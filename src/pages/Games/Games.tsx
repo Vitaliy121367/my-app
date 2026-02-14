@@ -8,6 +8,7 @@ import styles from './Games.module.css';
 
 export const Games = () => {
   const [games, setGames] = useState<any[]>([]);
+  const [bg, setBg] = useState<any>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}")["background"] : null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,16 +23,29 @@ export const Games = () => {
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
 
-    return () => { };
   }, []);
 
-  if (loading) return <Loader />;
-  if (error) return <div>Error: {error}</div>;
-
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage: `url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh"
+      }}
+    >
       <Navbar />
 
+      {loading && <Loader />}
+
+            {!loading && error && (
+                <div className="text-danger text-center py-5">
+                    Error: {error}
+                </div>
+            )}
+
+           {!loading && !error && ( 
       <div className="container py-4">
         <h1 className={styles.title}>Games</h1>
         <div className="row g-4">
@@ -54,9 +68,9 @@ export const Games = () => {
             </div>
           ))}
         </div>
-      </div>
-
+      </div>)}
       <Footer />
+
     </div>
   );
 };

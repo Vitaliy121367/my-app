@@ -1,0 +1,9 @@
+.content {
+  flex: 1;                 
+}
+
+.title{
+  text-align: center;
+  color: red;
+  padding-top: 4.8%;
+}

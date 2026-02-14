@@ -32,7 +32,7 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const [isFormValid, setIsFormValid] = useState(false);
-  const [error, setError] = useState(""); 
+  const [error, setError] = useState("");
   const [formControls, setFormControls] = useState<FormControls>({
     email: {
       type: "email",
@@ -98,7 +98,7 @@ export const Login = () => {
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
 
     try {
       const res = await axios.post("http://localhost:4000/api/auth/login", {
@@ -106,12 +106,20 @@ export const Login = () => {
         password: formControls.password.value,
       });
 
-      localStorage.setItem("token", res.data.token);
-      console.clear();
+      const token = res.data.token;
+
+      localStorage.setItem("token", token);
+
+      const resUser = await axios.get("http://localhost:4000/api/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+
+      localStorage.setItem("user", JSON.stringify(resUser.data));
       navigate("/");
     } catch (err: any) {
       if (err.response && err.response.data && err.response.data.message) {
-        setError(err.response.data.message); 
+        setError(err.response.data.message);
       } else {
         setError("Error logging in. Please try again.");
       }
@@ -156,7 +164,6 @@ export const Login = () => {
           </div>
         </div>
 
-        <Outlet />
       </div>
 
       <Footer />

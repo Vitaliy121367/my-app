@@ -9,6 +9,7 @@ const Navbar = () => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         setToken(null);
+        localStorage.removeItem('user');
         navidate('/login');
     }
 
