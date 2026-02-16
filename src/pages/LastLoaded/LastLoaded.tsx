@@ -30,17 +30,19 @@ export const LastLoaded = () => {
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
     }, []);
-
     return (
-        <div style={{
+    <div
+        className={style.page}
+        style={{
             backgroundImage: `url(${bg})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            minHeight: "100vh"
-        }}>
-            <Navbar />
+        }}
+    >
+        <Navbar />
 
+        <main className={style.content}>
             {loading && <Loader />}
 
             {!loading && error && (
@@ -49,21 +51,55 @@ export const LastLoaded = () => {
                 </div>
             )}
 
-            {!loading && !error && (
-                <div className={style.content}>
-                    <h2 className={style.title}>Last Loaded</h2>
+            <div className="p-4 mb-4">
+                <h6 className={`${style.title} mb-4`}>
+                    Last Loaded
+                </h6>
 
-                    <div className="container">
-                        {lastLoaded.map(record => (
-                            <div key={record._id}>
-                                {record.gameId?.name} — {record.time}
-                            </div>
-                        ))}
+                {!loading && !error && (
+                    <div className={style.runsGrid}>
+                        {lastLoaded.map((record: any) => {
+                            const getEmbedUrl = (url: string) => {
+                                const regExp =
+                                    /^.*(?:youtu.be\/|v\/|watch\?v=|embed\/)([^#&?]*).*/;
+                                const match = url.match(regExp);
+                                return match
+                                    ? `https://www.youtube.com/embed/${match[1]}`
+                                    : url;
+                            };
+                            if(record.status=="pending"){
+                                return (
+                                <div className={style.runCard} key={record._id}>
+                                    <iframe
+                                        className={style.video}
+                                        src={getEmbedUrl(record.urlVideo)}
+                                        title="YouTube video player"
+                                        allowFullScreen
+                                    />
+
+                                    <div className={style.cardBody}>
+                                        <h4>{record.gameId.name}</h4>
+                                        <h5>Time: {record.time}</h5>
+                                        <h5>User: {record.userId.name}</h5>
+
+                                        <p>Version: {record.version}</p>
+                                        <p>Platform: {record.platform}</p>
+                                        <p>
+                                            Date Uploaded:{" "}
+                                            {new Date(
+                                                record.dateUpload
+                                            ).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                            }
+                        })}
                     </div>
-                    <Footer />
-                </div>
-            )}
+                )}
+            </div>
+        </main>
 
-        </div>
-    );
-};
+        <Footer />
+    </div>
+)};
