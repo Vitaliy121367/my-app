@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
@@ -51,6 +51,7 @@ export const Games = () => {
         <div className="row g-4">
           {games.map(game => (
             <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
+              <NavLink to={`/games/${game._id}`} className="text-decoration-none text-dark">
               <div className="card h-100">
                 <img src={game.icon} className={`card-img-top ${styles.icon}`} />
                 <div className="card-body">
@@ -65,6 +66,7 @@ export const Games = () => {
                   </div>
                 </div>
               </div>
+              </NavLink>
             </div>
           ))}
         </div>

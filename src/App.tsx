@@ -10,6 +10,8 @@ import { Profile } from './pages/Profile/Profile';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { LastLoaded } from './pages/LastLoaded/LastLoaded';
 import { Settings } from './pages/Settings/Settings';
+import { AddRecord } from './pages/AddRecord/AddRecord';
+import { Record } from './pages/Record/Record';
 
 function App() {
   return (
@@ -17,7 +19,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Games />} />
-          <Route path="/game" element={<Game />} />
+          <Route path="/games/:id" element={<Game />} />
+          <Route path="/addrecord" element={<AddRecord />} />
+          <Route path="/record/:id" element={<Record />} />
           <Route path="/news" element={<News />} />
           <Route path="/lastloaded" element={<LastLoaded />} />
           <Route path="/settings" element={<Settings />} />
