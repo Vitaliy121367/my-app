@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import { useState } from "react";
+import styles from './Record.module.css';
 
 export const Record = () => {
   const [bg, setBg] = useState<any>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}")["background"] : null);
@@ -15,7 +16,7 @@ export const Record = () => {
                 }}
                 >
             <Navbar />
-            <h2>Record</h2>
+            <h1 className={styles.title}>Record</h1>
             <Footer />
         </div>
     )

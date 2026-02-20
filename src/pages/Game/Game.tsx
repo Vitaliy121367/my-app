@@ -16,6 +16,7 @@ export const Game = () => {
     );
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const effectRan = useRef(false);
     const navigate = useNavigate();
 
     const { id } = useParams<{ id: string }>();
@@ -24,23 +25,26 @@ export const Game = () => {
         if (!id) return;
 
         const fetchData = async () => {
+            if (effectRan.current) return;
+            effectRan.current = true;
             setLoading(true);
             try {
                 const gameRes = await axios.get(`http://localhost:4000/api/games/${id}`);
                 setGame(gameRes.data);
 
-                const recordsRes = await axios.get(`http://localhost:4000/api/records/game/?id=${gameRes.data._id}`);
-                const sortedRecords = [...recordsRes.data].sort(function (a, b) {
-                    if (a.time > b.time) {
-                        return 1;
-                    }
-                    if (a.time < b.time) {
-                        return -1;
-                    }
-                    return 0;
-                });
+                const recordsRes = await axios.get(
+                    `http://localhost:4000/api/records/game/?id=${gameRes.data._id}`
+                );
 
-                setRecords(sortedRecords);
+                const sortedApprovedRecords = [...recordsRes.data]
+                    .filter((r: any) => r.status === "approved")
+                    .sort((a, b) => {
+                        if (a.time > b.time) return 1;
+                        if (a.time < b.time) return -1;
+                        return 0;
+                    });
+
+                setRecords(sortedApprovedRecords);
             } catch (err: any) {
                 setError(err.message);
             } finally {
@@ -92,7 +96,7 @@ export const Game = () => {
 
                                     <div className="col-md-2">
                                         <NavLink
-                                            to={`/addrecord`}
+                                            to={`/addrecord/${game._id}`}
                                             className="btn btn-primary"
                                         >
                                             Add Record

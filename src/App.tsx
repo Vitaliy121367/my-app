@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Games />} />
           <Route path="/games/:id" element={<Game />} />
-          <Route path="/addrecord" element={<AddRecord />} />
+          <Route path="/addrecord/:id" element={<AddRecord />} />
           <Route path="/record/:id" element={<Record />} />
           <Route path="/news" element={<News />} />
           <Route path="/lastloaded" element={<LastLoaded />} />
