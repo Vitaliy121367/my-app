@@ -134,7 +134,7 @@ export const Game = () => {
                                             onClick={() => navigate(`/record/${record._id}`)}
                                         >
                                             <td>{index + 1}</td>
-                                            <td>{record.userId?.name ?? "Unknown"}</td>
+                                            <td>{record.userId?.name}</td>
                                             <td>{record.platform}</td>
                                             <td>{record.time}</td>
                                             <td>{record.version}</td>
