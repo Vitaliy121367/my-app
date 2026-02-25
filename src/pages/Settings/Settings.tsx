@@ -6,9 +6,27 @@ import styles from "./Settings.module.css";
 import Button from "../../UI/Button/Button";
 import axios from "axios";
 import Input from "../../UI/Input/Input";
+import countries from "i18n-iso-countries";
+import en from "i18n-iso-countries/langs/en.json";
+
+countries.registerLocale(en);
+
+const excludedCountries = [
+    "Russian Federation",
+    "Belarus"
+]; 
+
+const countryList = [
+    "Unknown", 
+    ...Object.values(
+        countries.getNames("en", { select: "official" })
+    )
+        .filter(country => !excludedCountries.includes(country))
+        .sort((a, b) => a.localeCompare(b))
+];
 
 type ValidationRules = { required?: boolean; email?: boolean; minLength?: number; url?: boolean };
-type Control = { type: string; label: string; errorMessage: string; value: string; validation: ValidationRules; valid: boolean; touched: boolean };
+type Control = { type: string; label: string; errorMessage: string; value: string; validation: ValidationRules; valid: boolean; touched: boolean; options?: string[] };
 type FormControls = { name: Control; email: Control; password: Control; passwordConfirmation: Control; icon: Control; background: Control; country: Control };
 
 export const Settings = () => {
@@ -25,7 +43,7 @@ export const Settings = () => {
         passwordConfirmation: { type: "password", label: "Confirm", errorMessage: "Must match", value: "", validation: { minLength: 6 }, valid: true, touched: false },
         icon: { type: "url", label: "Icon URL", errorMessage: "Valid URL", value: user?.icon || "", validation: { url: true }, valid: true, touched: false },
         background: { type: "url", label: "Background URL", errorMessage: "Valid URL", value: user?.background || "", validation: { url: true }, valid: true, touched: false },
-        country: { type: "text", label: "Country", errorMessage: "Required", value: user?.country || "", validation: { required: true }, valid: true, touched: false },
+        country: { type: "select", label: "Country", errorMessage: "Required", value: user?.country || "Unknown", validation: { required: true }, valid: true, touched: false, options: countryList}
     });
 
     const [isFormValid, setIsFormValid] = useState(true);
@@ -96,6 +114,37 @@ export const Settings = () => {
                             <form onSubmit={submitHandler}>
                                 {Object.keys(formControls).map((key) => {
                                     const control = formControls[key as keyof FormControls];
+
+                                    if (control.type === "select") {
+                                        return (
+                                            <div className="mb-3" key={key}>
+                                                <label className="form-label">{control.label}</label>
+
+                                                <select
+                                                    className="form-select"
+                                                    value={control.value}
+                                                    onChange={(e) =>
+                                                        onChangeHandler(e as any, key as keyof FormControls)
+                                                    }
+                                                >
+                                                    <option value="">Select country</option>
+
+                                                    {control.options?.map((country) => (
+                                                        <option key={country} value={country}>
+                                                            {country}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                {!control.valid && control.touched && (
+                                                    <div className="text-danger small">
+                                                        {control.errorMessage}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    }
+
                                     return (
                                         <Input
                                             key={key}
@@ -106,7 +155,9 @@ export const Settings = () => {
                                             touched={control.touched}
                                             errorMessage={control.errorMessage}
                                             shouldValidate={!!control.validation}
-                                            onChange={(e: any) => onChangeHandler(e, key as keyof FormControls)}
+                                            onChange={(e: any) =>
+                                                onChangeHandler(e, key as keyof FormControls)
+                                            }
                                         />
                                     );
                                 })}

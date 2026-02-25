@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
@@ -8,9 +8,12 @@ import styles from './Games.module.css';
 
 export const Games = () => {
   const [games, setGames] = useState<any[]>([]);
-  const [bg, setBg] = useState<any>(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}")["background"] : null);
+  const [bg, setBg] = useState<any>(
+    localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}")["background"] : null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const effectRan = useRef(false);
 
@@ -22,8 +25,11 @@ export const Games = () => {
       .then(res => setGames(res.data))
       .catch(err => setError(err.message))
       .finally(() => setLoading(false));
-
   }, []);
+
+  const filteredGames = games.filter(game =>
+    game.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div
@@ -39,40 +45,56 @@ export const Games = () => {
 
       {loading && <Loader />}
 
-            {!loading && error && (
-                <div className="text-danger text-center py-5">
-                    Error: {error}
-                </div>
-            )}
-
-           {!loading && !error && ( 
-      <div className="container py-4">
-        <h1 className={styles.title}>Games</h1>
-        <div className="row g-4">
-          {games.map(game => (
-            <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
-              <NavLink to={`/games/${game._id}`} className="text-decoration-none text-dark">
-              <div className="card h-100">
-                <img src={game.icon} className={`card-img-top ${styles.icon}`} />
-                <div className="card-body">
-                  <h5 className="card-title">{game.name}</h5>
-                  <p className="card-text">Year: {game.year}</p>
-                  <div>
-                    {game.platform.map((p: string) => (
-                      <span key={p} className="badge bg-secondary me-1">
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              </NavLink>
-            </div>
-          ))}
+      {!loading && error && (
+        <div className="text-danger text-center py-5">
+          Error: {error}
         </div>
-      </div>)}
-      <Footer />
+      )}
 
+      {!loading && !error && (
+        <div className={`${styles.page} ${styles.content} container py-4`}>
+          <h1 className={styles.title}>Games</h1>
+
+          <div className="mb-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search game..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="row g-4">
+            {filteredGames.length > 0 ? (
+              filteredGames.map(game => (
+                <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
+                  <NavLink to={`/games/${game._id}`} className="text-decoration-none text-dark">
+                    <div className="card h-100">
+                      <img src={game.icon} className={`card-img-top ${styles.icon}`} alt={game.name} />
+                      <div className="card-body">
+                        <h5 className="card-title">{game.name}</h5>
+                        <p className="card-text">Year: {game.year}</p>
+                        <div>
+                          {game.platform.map((p: string) => (
+                            <span key={p} className="badge bg-secondary me-1">{p}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </NavLink>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-5">
+                <h5 className="text-muted">No games found</h5>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Footer />
     </div>
   );
 };

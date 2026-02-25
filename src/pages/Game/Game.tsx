@@ -25,9 +25,8 @@ export const Game = () => {
         if (!id) return;
 
         const fetchData = async () => {
-            if (effectRan.current) return;
-            effectRan.current = true;
             setLoading(true);
+            setError(null);
             try {
                 const gameRes = await axios.get(`http://localhost:4000/api/games/${id}`);
                 setGame(gameRes.data);
@@ -36,17 +35,32 @@ export const Game = () => {
                     `http://localhost:4000/api/records/game/?id=${gameRes.data._id}`
                 );
 
-                const sortedApprovedRecords = [...recordsRes.data]
-                    .filter((r: any) => r.status === "approved")
-                    .sort((a, b) => {
-                        if (a.time > b.time) return 1;
-                        if (a.time < b.time) return -1;
-                        return 0;
-                    });
+                const approvedRecords = recordsRes.data.filter((r: any) => r.status === "approved");
 
-                setRecords(sortedApprovedRecords);
+                const bestRecordsMap: { [key: string]: any } = {};
+                approvedRecords.forEach((r: any) => {
+                    const userId = r.userId?._id;
+                    const platform = r.platform;
+                    if (!userId || !platform) return;
+
+                    const key = `${userId}_${platform}`;
+
+                    const timeToSeconds = (time: string) => {
+                        const [h, m, s] = time.split(":").map(Number);
+                        return h * 3600 + m * 60 + s;
+                    };
+
+                    if (!bestRecordsMap[key] || timeToSeconds(r.time) < timeToSeconds(bestRecordsMap[key].time)) {
+                        bestRecordsMap[key] = r;
+                    }
+                });
+
+                const bestRecords = Object.values(bestRecordsMap)
+                    .sort((a, b) => timeToSeconds(a.time) - timeToSeconds(b.time));
+
+                setRecords(bestRecords);
             } catch (err: any) {
-                setError(err.message);
+                setError(err.message || "Error fetching data");
             } finally {
                 setLoading(false);
             }
@@ -56,6 +70,10 @@ export const Game = () => {
     }, [id]);
 
 
+    const timeToSeconds = (time: string) => {
+        const [h, m, s] = time.split(":").map(Number);
+        return h * 3600 + m * 60 + s;
+    };
 
     return (
         <div style={{
@@ -75,7 +93,7 @@ export const Game = () => {
                 </div>
             )}
             {!loading && !error && (
-                <div className="container py-4">
+                <div className={`${styles.page} container py-4`}>
                     <h1 className={`card-title ${styles.gameTitle}`}>{game.name}</h1>
                     <div key={game._id} className="col-sm-12 col-md-12 col-lg-12">
                         <div className="card">
