@@ -87,7 +87,7 @@ export const Games = () => {
               ))
             ) : (
               <div className="text-center py-5">
-                <h5 className="text-muted">No games found</h5>
+                <h5 className={`${styles.title}`}>No games found</h5>
               </div>
             )}
           </div>

@@ -113,12 +113,15 @@ export const Game = () => {
                                     <div className="col-md-7"></div>
 
                                     <div className="col-md-2">
-                                        <NavLink
-                                            to={`/addrecord/${game._id}`}
-                                            className="btn btn-primary"
-                                        >
-                                            Add Record
-                                        </NavLink>
+                                        {
+                                            localStorage.getItem("user") &&
+                                            <NavLink
+                                                to={`/addrecord/${game._id}`}
+                                                className="btn btn-primary"
+                                            >
+                                                Add Record
+                                            </NavLink>
+                                        }
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.module.css';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Games } from './pages/Games/Games';
 import { Register } from './pages/Register/Register';
 import { Login } from './pages/Login/Login';
@@ -10,9 +10,8 @@ import { Profile } from './pages/Profile/Profile';
 import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { LastLoaded } from './pages/LastLoaded/LastLoaded';
 import { Settings } from './pages/Settings/Settings';
-import { AddRecord } from './pages/AddRecord/AddRecord';
 import { Record } from './pages/Record/Record';
-import { AddComment } from './pages/AddComment/AddComment';
+import { AddRecord } from './pages/AddRecord/AddRecord';
 
 function App() {
   return (
@@ -21,15 +20,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Games />} />
           <Route path="/games/:id" element={<Game />} />
-          <Route path="/addrecord/:id" element={<AddRecord />} />
-          <Route path="/record/:id" element={<Record />} />
-          <Route path="/addcomment/:gameId/:recordId" element={<AddComment />} />
           <Route path="/news" element={<News />} />
           <Route path="/lastloaded" element={<LastLoaded />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/record/:id" element={<Record />} />
+          <Route path="/addrecord/:id" element={<AddRecord />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

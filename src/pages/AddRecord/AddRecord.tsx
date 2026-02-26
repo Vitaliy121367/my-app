@@ -82,7 +82,7 @@ export const AddRecord = () => {
             alert(err.message);
         }
     };
-
+    if (!user) { navigate("/"); return null; }
     if (loading) return <div className="text-center py-5">Loading...</div>;
     if (error) return <div className="text-danger text-center py-5">{error}</div>;
 
