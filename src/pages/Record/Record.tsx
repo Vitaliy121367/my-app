@@ -221,54 +221,57 @@ export const Record = () => {
         </div>
 
         <h2 className={`mt-4 ${styles.title}`}>Comments</h2>
-        {user && user._id !== record.userId._id && (
-          <div className="d-flex mb-4 align-items-start" style={{ gap: "10px", flexWrap: "wrap" }}>
 
-            <textarea
-              className="form-control"
-              placeholder="Add comment or report..."
-              value={replyText || reportText}
-              onChange={e => {
-                if (replyText !== undefined) setReplyText(e.target.value);
-                if (reportText !== undefined) setReportText(e.target.value);
-              }}
-              style={{ flex: 1, minHeight: "60px" }}
-              required
-            />
+        {
+          user.role !== "blocked" && (
+            user && user._id !== record.userId._id && (
+              <div className="d-flex mb-4 align-items-start" style={{ gap: "10px", flexWrap: "wrap" }}>
 
-            <div className={`${styles.title} d-flex align-items-center`} style={{ gap: "5px" }}>
-              Rating:{" "}
-              {[1, 2, 3, 4, 5].map(st => (
-                <span
-                  key={st}
-                  style={{
-                    color: st <= rating ? "#FFD966" : "#989595",
-                    cursor: "pointer",
-                    fontSize: "16px",
+                <textarea
+                  className="form-control"
+                  placeholder="Add comment or report..."
+                  value={replyText || reportText}
+                  onChange={e => {
+                    if (replyText !== undefined) setReplyText(e.target.value);
+                    if (reportText !== undefined) setReportText(e.target.value);
                   }}
-                  onClick={() => setRating(st < 1 ? 1 : st)}
-                >
-                  ★
-                </span>
-              ))}
-            </div>
+                  style={{ flex: 1, minHeight: "60px" }}
+                  required
+                />
 
-            <div className="d-flex flex-column gap-1">
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={handleReply}
-              >
-                Post Comment
-              </button>
-              <button
-                className="btn btn-outline-danger btn-sm"
-                onClick={handleReportRecord}
-              >
-                Report
-              </button>
-            </div>
-          </div>
-        )}
+                <div className={`${styles.title} d-flex align-items-center`} style={{ gap: "5px" }}>
+                  Rating:{" "}
+                  {[1, 2, 3, 4, 5].map(st => (
+                    <span
+                      key={st}
+                      style={{
+                        color: st <= rating ? "#FFD966" : "#989595",
+                        cursor: "pointer",
+                        fontSize: "16px",
+                      }}
+                      onClick={() => setRating(st < 1 ? 1 : st)}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+
+                <div className="d-flex flex-column gap-1">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={handleReply}
+                  >
+                    Post Comment
+                  </button>
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={handleReportRecord}
+                  >
+                    Report
+                  </button>
+                </div>
+              </div>
+            ))}
 
         {renderComments()}
       </div>

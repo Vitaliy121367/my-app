@@ -1,4 +1,3 @@
-// src/pages/News/News.tsx
 import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";

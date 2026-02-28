@@ -9,11 +9,8 @@ import styles from './Game.module.css';
 export const Game = () => {
     const [game, setGame] = useState<any>(null);
     const [records, setRecords] = useState<any[]>([]);
-    const [bg, setBg] = useState<any>(
-        localStorage.getItem("user")
-            ? JSON.parse(localStorage.getItem("user") || "{}").background
-            : null
-    );
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}") : null;
+    const [bg, setBg] = useState<any>(user?.background || null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const effectRan = useRef(false);
@@ -74,7 +71,7 @@ export const Game = () => {
         const [h, m, s] = time.split(":").map(Number);
         return h * 3600 + m * 60 + s;
     };
-
+    
     return (
         <div style={{
             backgroundImage: `url(${bg})`,
@@ -114,13 +111,17 @@ export const Game = () => {
 
                                     <div className="col-md-2">
                                         {
-                                            localStorage.getItem("user") &&
-                                            <NavLink
-                                                to={`/addrecord/${game._id}`}
-                                                className="btn btn-primary"
-                                            >
-                                                Add Record
-                                            </NavLink>
+                                        user.role !== "blocked" && (
+                                            <>
+                                                localStorage.getItem("user") &&
+                                                <NavLink
+                                                    to={`/addrecord/${game._id}`}
+                                                    className="btn btn-primary"
+                                                >
+                                                    Add Record
+                                                </NavLink>
+                                            </>
+                                        )
                                         }
                                     </div>
                                 </div>

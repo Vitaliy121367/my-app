@@ -82,10 +82,14 @@ export const AddRecord = () => {
             alert(err.message);
         }
     };
-    if (!user) { navigate("/"); return null; }
+    useEffect(() => {
+        if (!user || user.role === "blocked") {
+            navigate("/");
+        }
+    }, [user, navigate]);
+    
     if (loading) return <div className="text-center py-5">Loading...</div>;
     if (error) return <div className="text-danger text-center py-5">{error}</div>;
-
     return (
         <div
             style={{

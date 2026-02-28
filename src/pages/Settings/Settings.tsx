@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./Settings.module.css";
 import Button from "../../UI/Button/Button";
 import axios from "axios";
@@ -14,10 +14,10 @@ countries.registerLocale(en);
 const excludedCountries = [
     "Russian Federation",
     "Belarus"
-]; 
+];
 
 const countryList = [
-    "Unknown", 
+    "Unknown",
     ...Object.values(
         countries.getNames("en", { select: "official" })
     )
@@ -43,7 +43,7 @@ export const Settings = () => {
         passwordConfirmation: { type: "password", label: "Confirm", errorMessage: "Must match", value: "", validation: { minLength: 6 }, valid: true, touched: false },
         icon: { type: "url", label: "Icon URL", errorMessage: "Valid URL", value: user?.icon || "", validation: { url: true }, valid: true, touched: false },
         background: { type: "url", label: "Background URL", errorMessage: "Valid URL", value: user?.background || "", validation: { url: true }, valid: true, touched: false },
-        country: { type: "select", label: "Country", errorMessage: "Required", value: user?.country || "Unknown", validation: { required: true }, valid: true, touched: false, options: countryList}
+        country: { type: "select", label: "Country", errorMessage: "Required", value: user?.country || "Unknown", validation: { required: true }, valid: true, touched: false, options: countryList }
     });
 
     const [isFormValid, setIsFormValid] = useState(true);
@@ -102,6 +102,11 @@ export const Settings = () => {
             setError(err.response?.data?.message || "Update failed");
         }
     };
+    useEffect(() => {
+        if (!user || user.role === "blocked") {
+            navigate("/");
+        }
+    }, [user, navigate]);
 
     return (
         <div style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover", backgroundPosition: "center", minHeight: "100vh" }}>
@@ -118,7 +123,7 @@ export const Settings = () => {
                                     if (control.type === "select") {
                                         return (
                                             <div className="mb-3" key={key}>
-                                                <label className="form-label">{control.label}</label>
+                                                <label className={styles.title}>{control.label}</label>
 
                                                 <select
                                                     className="form-select"

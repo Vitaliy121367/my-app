@@ -133,15 +133,39 @@ export const Profile = () => {
                                             {user.role}
                                         </h6>
                                     </div>
+                                    {
+                                        user.role !== "blocked" && (
+                                            <>
+                                                <div className="col-9"></div>
+                                                {
+                                                    user.role === "moderator" && (
+                                                        <div className="col-1">
+                                                            <NavLink
+                                                                to="/settings"
+                                                                className="btn btn-outline-primary"
+                                                            >
+                                                                Moder Panel
+                                                            </NavLink>
+                                                        </div>
+                                                    )
+                                                }
 
-                                    <div className="ms-auto">
-                                        <NavLink
-                                            to="/settings"
-                                            className="btn btn-outline-primary"
-                                        >
-                                            Settings
-                                        </NavLink>
-                                    </div>
+                                                {
+                                                    user.role === "user" && (
+                                                        <div className="col-1"></div>
+                                                    )
+                                                }
+                                                <div className="col-1">
+                                                    <NavLink
+                                                        to="/settings"
+                                                        className="btn btn-outline-primary"
+                                                    >
+                                                        Settings
+                                                    </NavLink>
+                                                </div>
+                                            </>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="card card-dark p-4 mb-4">
