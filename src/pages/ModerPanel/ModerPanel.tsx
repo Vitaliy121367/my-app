@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
 import { Navbar } from "../../components/Navbar/Navbar";
+import styles from "./ModerPanel.module.css";
 
 export const ModerPanel = () => {
     const [loading, setLoading] = useState(true);
@@ -24,15 +25,11 @@ export const ModerPanel = () => {
         >
             <Navbar />
 
-            {loading && <Loader />}
-
-            {!loading && error && (
-                <div className="text-danger text-center py-5">{error}</div>
-            )}
+            
 
             {!loading && !error && (
                 <div className={`${styles.page} ${styles.content} container py-4`}>
-                    <h1 className={styles.title}>Games</h1>
+                    <h1 className={styles.title}>ModerPanel</h1>
                 </div>
             )}
 

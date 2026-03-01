@@ -1,35 +1,57 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
-import styles from './Games.module.css';
+import styles from "./Games.module.css";
+
+const LIMIT = 20;
 
 export const Games = () => {
   const [games, setGames] = useState<any[]>([]);
-  const [bg, setBg] = useState<any>(
-    localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") || "{}")["background"] : null
-  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
-  const effectRan = useRef(false);
+  const [inputValue, setInputValue] = useState(""); // текущее значение инпута
+  const [search, setSearch] = useState(""); // значение для фильтрации
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [bg] = useState<any>(
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user") || "{}")["background"]
+      : null
+  );
 
   useEffect(() => {
-    if (effectRan.current) return;
-    effectRan.current = true;
+    setLoading(true);
+    setError(null);
 
-    axios.get("http://localhost:4000/api/games")
-      .then(res => setGames(res.data))
-      .catch(err => setError(err.message))
+    axios
+      .get("http://localhost:4000/api/games")
+      .then((res) => {
+        const data = Array.isArray(res.data) ? res.data : res.data.games || [];
+        const filtered = data.filter((game: any) =>
+          game.name.toLowerCase().includes(search.toLowerCase())
+        );
+
+        setGames(filtered);
+        setPage(1);
+      })
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [search]);
 
-  const filteredGames = games.filter(game =>
-    game.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const pages = Math.ceil(games.length / LIMIT);
+  const paginatedGames = games.slice((page - 1) * LIMIT, page * LIMIT);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setSearch(inputValue); // поиск запускается только при Enter
+    }
+  };
 
   return (
     <div
@@ -37,64 +59,101 @@ export const Games = () => {
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh"
+        minHeight: "100vh",
       }}
     >
       <Navbar />
 
       {loading && <Loader />}
-
       {!loading && error && (
-        <div className="text-danger text-center py-5">
-          Error: {error}
-        </div>
+        <div className="text-danger text-center py-5">Error: {error}</div>
       )}
 
       {!loading && !error && (
-        <div className={`${styles.page} ${styles.content} container py-4`}>
-          <h1 className={styles.title}>Games</h1>
+        <>
+          <div className={`${styles.page} ${styles.content} container py-4`}>
+            <h1 className={styles.title}>Games</h1>
 
-          <div className="mb-4">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search game..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+            <div className="mb-4 d-flex gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                className="form-control"
+                placeholder="Search game..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
+                autoFocus
+              />
+              <button
+                className="btn btn-warning"
+                onClick={() => setSearch(inputValue)}
+              >
+                Search
+              </button>
+            </div>
 
-          <div className="row g-4">
-            {filteredGames.length > 0 ? (
-              filteredGames.map(game => (
-                <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
-                  <NavLink to={`/games/${game._id}`} className="text-decoration-none text-dark">
-                    <div className="card h-100">
-                      <img src={game.icon} className={`card-img-top ${styles.icon}`} alt={game.name} />
-                      <div className="card-body">
-                        <h5 className="card-title">{game.name}</h5>
-                        <p className="card-text">Year: {game.year}</p>
-                        <div>
-                          {game.platform.map((p: string) => (
-                            <span key={p} className="badge bg-secondary me-1">{p}</span>
-                          ))}
+            <div className="row g-4">
+              {paginatedGames.length > 0 ? (
+                paginatedGames.map((game) => (
+                  <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
+                    <NavLink
+                      to={`/games/${game._id}`}
+                      className="text-decoration-none text-dark"
+                    >
+                      <div className="card h-100">
+                        <img
+                          src={game.icon}
+                          className={`card-img-top ${styles.icon}`}
+                          alt={game.name}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{game.name}</h5>
+                          <p className="card-text">Year: {game.year}</p>
+                          <div>
+                            {game.platform.map((p: string) => (
+                              <span key={p} className="badge bg-secondary me-1">
+                                {p}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </NavLink>
+                    </NavLink>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-5">
+                  <h5 className={styles.title}>No games found</h5>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-5">
-                <h5 className={`${styles.title}`}>No games found</h5>
+              )}
+            </div>
+
+            {pages > 1 && (
+              <div className="d-flex justify-content-center align-items-center mt-5 gap-3">
+                <button
+                  className="btn btn-warning"
+                  disabled={page === 1}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Prev
+                </button>
+                <span className={styles.title}>
+                  Page {page} / {pages}
+                </span>
+                <button
+                  className="btn btn-warning"
+                  disabled={page === pages}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Next
+                </button>
               </div>
             )}
           </div>
-        </div>
+          <Footer />
+        </>
       )}
-
-      <Footer />
     </div>
   );
 };

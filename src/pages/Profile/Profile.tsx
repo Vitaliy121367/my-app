@@ -141,7 +141,7 @@ export const Profile = () => {
                                                     user.role === "moderator" && (
                                                         <div className="col-1">
                                                             <NavLink
-                                                                to="/settings"
+                                                                to="/profile/ModerPanel"
                                                                 className="btn btn-outline-primary"
                                                             >
                                                                 Moder Panel

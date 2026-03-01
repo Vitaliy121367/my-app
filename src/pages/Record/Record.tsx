@@ -62,10 +62,12 @@ export const Record = () => {
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!replyText.trim() || !user) return;
-
     const gameId = record.gameId?._id || null;
-    const ratingValue = rating < 1 ? 1 : rating;
-
+    if (rating === 0) {
+      alert("Please provide a rating for your comment.");
+      return;
+    }
+    const ratingValue = rating;
     const newComment = {
       text: replyText,
       fromUserId: user._id,
@@ -245,9 +247,9 @@ export const Record = () => {
                     <span
                       key={st}
                       style={{
-                        color: st <= rating ? "#FFD966" : "#989595",
+                        color: st <= rating ? "#ffd556" : "#989595",
                         cursor: "pointer",
-                        fontSize: "16px",
+                        fontSize: "20px",
                       }}
                       onClick={() => setRating(st < 1 ? 1 : st)}
                     >

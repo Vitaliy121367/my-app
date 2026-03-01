@@ -12,6 +12,7 @@ import { LastLoaded } from './pages/LastLoaded/LastLoaded';
 import { Settings } from './pages/Settings/Settings';
 import { Record } from './pages/Record/Record';
 import { AddRecord } from './pages/AddRecord/AddRecord';
+import { ModerPanel } from './pages/ModerPanel/ModerPanel';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/ModerPanel" element={<ModerPanel />} />
           <Route path="/record/:id" element={<Record />} />
           <Route path="/addrecord/:id" element={<AddRecord />} />
           <Route path="*" element={<NotFoundPage />} />
