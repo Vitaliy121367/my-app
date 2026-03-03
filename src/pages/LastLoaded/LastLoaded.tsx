@@ -15,9 +15,13 @@ export const LastLoaded = () => {
         : null;
 
     useEffect(() => {
-        axios.get("http://localhost:4000/api/records")
-            .then(res => {
-                const latestFiveApproved = res.data
+        const fetchData = async () => {
+            try {
+                const { data } = await axios.get("http://localhost:4000/api/records");
+
+                const recordsArray = data.records || [];
+
+                const latestFiveApproved = recordsArray
                     .filter((record: any) => record.status === "approved")
                     .sort(
                         (a: any, b: any) =>
@@ -26,17 +30,26 @@ export const LastLoaded = () => {
                     )
                     .slice(0, 5);
 
+
                 setLastLoaded(latestFiveApproved);
-            })
-            .catch(err => setError(err.message))
-            .finally(() => setLoading(false));
+            } catch (err: any) {
+                setError(err.response?.data?.message || err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, []);
 
     const getEmbedUrl = (url: string) => {
         if (!url) return "";
-        const regExp = /^.*(?:youtu.be\/|v\/|watch\?v=|embed\/)([^#&?]*).*/;
+        const regExp =
+            /^.*(?:youtu.be\/|v\/|watch\?v=|embed\/)([^#&?]*).*/;
         const match = url.match(regExp);
-        return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+        return match
+            ? `https://www.youtube.com/embed/${match[1]}`
+            : url;
     };
 
     return (
@@ -47,6 +60,7 @@ export const LastLoaded = () => {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
+                minHeight: "100vh",
             }}
         >
             <Navbar />
@@ -69,6 +83,7 @@ export const LastLoaded = () => {
                 {!loading && !error && lastLoaded.length > 0 && (
                     <div className="p-4 mb-4">
                         <h6 className={`${style.title} mb-4`}>Last Loaded</h6>
+
                         <div className={style.runsGrid}>
                             {lastLoaded.map((record: any) => (
                                 <div className={style.runCard} key={record._id}>
@@ -76,8 +91,8 @@ export const LastLoaded = () => {
                                         <iframe
                                             className={style.video}
                                             src={getEmbedUrl(record.urlVideo)}
-                                            title="YouTube video player"
                                             allowFullScreen
+                                            title="video"
                                         />
                                     ) : (
                                         <div className="text-center p-3 text-muted">
@@ -86,7 +101,9 @@ export const LastLoaded = () => {
                                     )}
 
                                     <div className={style.cardBody}>
-                                        <h4>{record.gameId?.name || "Unknown Game"}</h4>
+                                        <h4>
+                                            {record.gameId?.name || "Unknown Game"}
+                                        </h4>
                                         <h5>Time: {record.time || "00:00:00"}</h5>
                                         <h5>User: {record.userId?.name || "Unknown User"}</h5>
                                         <p>Version: {record.version || "-"}</p>

@@ -69,57 +69,60 @@ export const News = () => {
                 <div className="text-danger text-center py-5">{error}</div>
             )}
             {!loading && !error && (
-                <div className="container py-4">
-                    <h1 className={styles.title}>Video Games News</h1>
-                    {news.length > 0 ? (
-                        <div className="row g-4">
-                            {news.map((item, index) => (
-                                <div key={index} className="col-sm-6 col-md-4 col-lg-3">
-                                    <div className={`card ${styles.card}`}>
-                                        <div className={styles.imageWrapper}>
-                                            <img
-                                                src={item.image || "https://via.placeholder.com/300x180"}
-                                                alt={item.title}
-                                                loading="lazy"
-                                            />
-                                        </div>
+                <div>
+                    <div className="container py-4">
+                        <h1 className={styles.title}>Video Games News</h1>
+                        {news.length > 0 ? (
+                            <div className="row g-4">
+                                {news.map((item, index) => (
+                                    <div key={index} className="col-sm-6 col-md-4 col-lg-3">
+                                        <div className={`card ${styles.card}`}>
+                                            <div className={styles.imageWrapper}>
+                                                <img
+                                                    src={item.image || "https://via.placeholder.com/300x180"}
+                                                    alt={item.title}
+                                                    loading="lazy"
+                                                />
+                                            </div>
 
-                                        <div className="card-body d-flex flex-column">
-                                            <h5 className={`card-title ${styles.titleText}`}>
-                                                {item.title}
-                                            </h5>
+                                            <div className="card-body d-flex flex-column">
+                                                <h5 className={`card-title ${styles.titleText}`}>
+                                                    {item.title}
+                                                </h5>
 
-                                            <p className={`card-text ${styles.summary}`}>
-                                                {item.summary}
-                                            </p>
+                                                <p className={`card-text ${styles.summary}`}>
+                                                    {item.summary}
+                                                </p>
 
-                                            <p className={styles.date}>
-                                                {new Date(item.date).toLocaleDateString()}
-                                            </p>
+                                                <p className={styles.date}>
+                                                    {new Date(item.date).toLocaleDateString()}
+                                                </p>
 
-                                            {item.url && (
-                                                <a
-                                                    href={item.url}
-                                                    className="btn btn-primary mt-auto"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    Read More
-                                                </a>
-                                            )}
+                                                {item.url && (
+                                                    <a
+                                                        href={item.url}
+                                                        className="btn btn-primary mt-auto"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        Read More
+                                                    </a>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-5">
-                            <h5 className="text-muted">No news available</h5>
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-5">
+                                <h5 className="text-muted">No news available</h5>
+                            </div>
+                        )}
+                    </div>
+
+                    <Footer />
                 </div>
             )}
-            <Footer />
         </div>
     );
 };

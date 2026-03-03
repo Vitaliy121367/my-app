@@ -5,6 +5,7 @@ type RecordType = {
   version: string;
   dateUpload: string;
   urlVideo: string;
+  status: string;
+  gameId: { name: string };
   userId: UserType | null;
-  gameId: GameType | null;
 };

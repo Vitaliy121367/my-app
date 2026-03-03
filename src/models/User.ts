@@ -4,4 +4,5 @@ type UserType = {
   icon?: string;
   background?: string;
   country?: string;
+  role: string;
 };

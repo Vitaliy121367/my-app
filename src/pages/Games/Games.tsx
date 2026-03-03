@@ -14,8 +14,8 @@ export const Games = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
-  const [inputValue, setInputValue] = useState(""); // текущее значение инпута
-  const [search, setSearch] = useState(""); // значение для фильтрации
+  const [inputValue, setInputValue] = useState(""); 
+  const [search, setSearch] = useState(""); 
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -49,7 +49,7 @@ export const Games = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setSearch(inputValue); // поиск запускается только при Enter
+      setSearch(inputValue); 
     }
   };
 
@@ -130,24 +130,19 @@ export const Games = () => {
             </div>
 
             {pages > 1 && (
-              <div className="d-flex justify-content-center align-items-center mt-5 gap-3">
-                <button
-                  className="btn btn-warning"
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => p - 1)}
-                >
-                  Prev
-                </button>
-                <span className={styles.title}>
-                  Page {page} / {pages}
-                </span>
-                <button
-                  className="btn btn-warning"
-                  disabled={page === pages}
-                  onClick={() => setPage((p) => p + 1)}
-                >
-                  Next
-                </button>
+              <div className="d-flex justify-content-center align-items-center mt-5 gap-2 flex-wrap">
+                {Array.from({ length: pages }, (_, index) => index + 1).map(
+                  (pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      className={`btn ${page === pageNumber ? "btn-warning" : "btn-outline-warning"
+                        }`}
+                      onClick={() => setPage(pageNumber)}
+                    >
+                      {pageNumber}
+                    </button>
+                  )
+                )}
               </div>
             )}
           </div>
