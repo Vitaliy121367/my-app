@@ -74,8 +74,8 @@ export const News = () => {
                         <h1 className={styles.title}>Video Games News</h1>
                         {news.length > 0 ? (
                             <div className="row g-4">
-                                {news.map((item, index) => (
-                                    <div key={index} className="col-sm-6 col-md-4 col-lg-3">
+                                {news.slice(0, 9).map((item, index) => (
+                                    <div key={index} className="col-md-4">
                                         <div className={`card ${styles.card}`}>
                                             <div className={styles.imageWrapper}>
                                                 <img

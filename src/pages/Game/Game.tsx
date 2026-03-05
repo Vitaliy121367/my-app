@@ -66,7 +66,7 @@ export const Game = () => {
                     if (
                         !bestRecordsMap[key] ||
                         timeToSeconds(r.time) <
-                            timeToSeconds(bestRecordsMap[key].time)
+                        timeToSeconds(bestRecordsMap[key].time)
                     ) {
                         bestRecordsMap[key] = r;
                     }
@@ -119,120 +119,122 @@ export const Game = () => {
             )}
 
             {!loading && !error && game && (
-                <div className={`${styles.page} container py-4`}>
-                    <h1 className={`card-title ${styles.gameTitle}`}>
-                        {game.name}
-                    </h1>
+                <div>
+                    <div className={`${styles.page} container py-4`}>
+                        <h1 className={`card-title ${styles.gameTitle}`}>
+                            {game.name}
+                        </h1>
 
-                    <div className="card mb-4">
-                        <img
-                            src={game.icon}
-                            className={`card-img-top ${styles.gameImage}`}
-                            alt={game.name}
-                        />
+                        <div className="card mb-4">
+                            <img
+                                src={game.icon}
+                                className={`card-img-top ${styles.gameImage}`}
+                                alt={game.name}
+                            />
 
-                        <div className="card-body d-flex justify-content-between align-items-center">
-                            <p className="mb-0">
-                                <strong>Year:</strong> {game.year}
-                            </p>
+                            <div className="card-body d-flex justify-content-between align-items-center">
+                                <p className="mb-0">
+                                    <strong>Year:</strong> {game.year}
+                                </p>
 
-                            {user?.role !== "blocked" && (
-                                <NavLink
-                                    to={`/addrecord/${game._id}`}
-                                    className="btn btn-primary"
-                                >
-                                    Add Record
-                                </NavLink>
-                            )}
-                        </div>
-
-                        <div className="card-body">
-                            {game.platform.map((p: string) => (
-                                <span
-                                    key={p}
-                                    className="badge bg-secondary me-1"
-                                >
-                                    {p}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="d-flex gap-2 mb-3">
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            className="form-control"
-                            placeholder="Search user..."
-                            value={inputValue}
-                            onChange={(e) =>
-                                setInputValue(e.target.value)
-                            }
-                            onKeyDown={(e) =>
-                                e.key === "Enter" && handleSearch()
-                            }
-                        />
-                        <button
-                            className="btn btn-warning"
-                            onClick={handleSearch}
-                        >
-                            Search
-                        </button>
-                    </div>
-
-                    {/* Таблица */}
-                    <div className="table-responsive">
-                        <table
-                            className={`table table-hover ${styles.tableCustom}`}
-                        >
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>User</th>
-                                    <th>Platform</th>
-                                    <th>Time</th>
-                                    <th>Version</th>
-                                    <th>Date Upload</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {records.length === 0 && (
-                                    <tr>
-                                        <td colSpan={6} className="text-center">
-                                            No approved records yet
-                                        </td>
-                                    </tr>
-                                )}
-
-                                {records.map((record, index) => (
-                                    <tr
-                                        key={record._id}
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() =>
-                                            navigate(
-                                                `/record/${record._id}`
-                                            )
-                                        }
+                                {user?.role !== "blocked" && user !== null && (
+                                    <NavLink
+                                        to={`/addrecord/${game._id}`}
+                                        className="btn btn-primary"
                                     >
-                                        <td>{index + 1}</td>
-                                        <td>{record.userId?.name}</td>
-                                        <td>{record.platform}</td>
-                                        <td>{record.time}</td>
-                                        <td>{record.version}</td>
-                                        <td>
-                                            {new Date(
-                                                record.dateUpload
-                                            ).toLocaleDateString()}
-                                        </td>
-                                    </tr>
+                                        Add Record
+                                    </NavLink>
+                                )}
+                            </div>
+
+                            <div className="card-body">
+                                {game.platform.map((p: string) => (
+                                    <span
+                                        key={p}
+                                        className="badge bg-secondary me-1"
+                                    >
+                                        {p}
+                                    </span>
                                 ))}
-                            </tbody>
-                        </table>
+                            </div>
+                        </div>
+
+                        <div className="d-flex gap-2 mb-3">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                className="form-control"
+                                placeholder="Search user..."
+                                value={inputValue}
+                                onChange={(e) =>
+                                    setInputValue(e.target.value)
+                                }
+                                onKeyDown={(e) =>
+                                    e.key === "Enter" && handleSearch()
+                                }
+                            />
+                            <button
+                                className="btn btn-warning"
+                                onClick={handleSearch}
+                            >
+                                Search
+                            </button>
+                        </div>
+
+                        <div className="table-responsive">
+                            <table
+                                className={`table table-hover ${styles.tableCustom}`}
+                            >
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User</th>
+                                        <th>Platform</th>
+                                        <th>Time</th>
+                                        <th>Version</th>
+                                        <th>Date Upload</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {records.length === 0 && (
+                                        <tr>
+                                            <td colSpan={6} className="text-center">
+                                                No approved records yet
+                                            </td>
+                                        </tr>
+                                    )}
+
+                                    {records.map((record, index) => (
+                                        <tr
+                                            key={record._id}
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() =>
+                                                navigate(
+                                                    `/record/${record._id}`
+                                                )
+                                            }
+                                        >
+                                            <td>{index + 1}</td>
+                                            <td>{record.userId?.name}</td>
+                                            <td>{record.platform}</td>
+                                            <td>{record.time}</td>
+                                            <td>{record.version}</td>
+                                            <td>
+                                                {new Date(
+                                                    record.dateUpload
+                                                ).toLocaleDateString()}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+
+                    <Footer />
                 </div>
             )}
 
-            <Footer />
         </div>
     );
 };

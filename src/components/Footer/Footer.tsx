@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.top}>
-        {/* Brand */}
+        
         <div className={styles.column}>
           <h3 className={styles.logo}>FastRuns</h3>
           <p className={styles.description}>
@@ -14,7 +14,7 @@ export const Footer = () => {
           </p>
         </div>
 
-        {/* Navigation */}
+
         <div className={styles.column}>
           <h4>Navigation</h4>
           <ul>
@@ -24,7 +24,7 @@ export const Footer = () => {
           </ul>
         </div>
 
-        {/* Resources */}
+
         <div className={styles.column}>
           <h4>Resources</h4>
           <ul>
@@ -33,7 +33,7 @@ export const Footer = () => {
           </ul>
         </div>
 
-        {/* Contact */}
+
         <div className={styles.column}>
           <h4>Contact</h4>
           <ul>

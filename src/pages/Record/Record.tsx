@@ -36,6 +36,14 @@ export const Record = () => {
     : null;
   const token = localStorage.getItem("token");
 
+  const [mode, setMode] = useState<"comment" | "report">("comment");
+
+  const canComment =
+    user &&
+    record &&
+    user.role !== "blocked" &&
+    user._id !== record.userId?._id;
+
   useEffect(() => {
     if (!id) return;
 
@@ -224,56 +232,73 @@ export const Record = () => {
 
         <h2 className={`mt-4 ${styles.title}`}>Comments</h2>
 
-        {
-          user.role !== "blocked" && (
-            user && user._id !== record.userId._id && (
-              <div className="d-flex mb-4 align-items-start" style={{ gap: "10px", flexWrap: "wrap" }}>
+        {canComment && (
+          <div
+            className="d-flex mb-4 align-items-start"
+            style={{ gap: "10px", flexWrap: "wrap" }}
+          >
+            <textarea
+              className="form-control"
+              placeholder={
+                mode === "comment"
+                  ? "Add your comment..."
+                  : "Describe the problem..."
+              }
+              value={mode === "comment" ? replyText : reportText}
+              onChange={(e) =>
+                mode === "comment"
+                  ? setReplyText(e.target.value)
+                  : setReportText(e.target.value)
+              }
+              style={{ flex: 1, minHeight: "60px" }}
+              required
+            />
 
-                <textarea
-                  className="form-control"
-                  placeholder="Add comment or report..."
-                  value={replyText || reportText}
-                  onChange={e => {
-                    if (replyText !== undefined) setReplyText(e.target.value);
-                    if (reportText !== undefined) setReportText(e.target.value);
-                  }}
-                  style={{ flex: 1, minHeight: "60px" }}
-                  required
-                />
-
-                <div className={`${styles.title} d-flex align-items-center`} style={{ gap: "5px" }}>
-                  Rating:{" "}
-                  {[1, 2, 3, 4, 5].map(st => (
-                    <span
-                      key={st}
-                      style={{
-                        color: st <= rating ? "#ffd556" : "#989595",
-                        cursor: "pointer",
-                        fontSize: "20px",
-                      }}
-                      onClick={() => setRating(st < 1 ? 1 : st)}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-
-                <div className="d-flex flex-column gap-1">
-                  <button
-                    className="btn btn-primary btn-sm"
-                    onClick={handleReply}
+            {mode === "comment" && (
+              <div
+                className={`${styles.title} d-flex align-items-center`}
+                style={{ gap: "5px" }}
+              >
+                Rating:
+                {[1, 2, 3, 4, 5].map((st) => (
+                  <span
+                    key={st}
+                    style={{
+                      color: st <= rating ? "#ffd556" : "#989595",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                    }}
+                    onClick={() => setRating(st)}
                   >
-                    Post Comment
-                  </button>
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    onClick={handleReportRecord}
-                  >
-                    Report
-                  </button>
-                </div>
+                    ★
+                  </span>
+                ))}
               </div>
-            ))}
+            )}
+
+            <div className="d-flex flex-column gap-1">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={(e) =>
+                  mode === "comment"
+                    ? handleReply(e)
+                    : handleReportRecord(e)
+                }
+              >
+                {mode === "comment" ? "Post Comment" : "Send Report"}
+              </button>
+
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={() =>
+                  setMode(mode === "comment" ? "report" : "comment")
+                }
+              >
+                Switch to {mode === "comment" ? "Report" : "Comment"}
+              </button>
+            </div>
+          </div>
+        )}
 
         {renderComments()}
       </div>
