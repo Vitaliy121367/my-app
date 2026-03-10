@@ -5,12 +5,12 @@ export const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.top}>
-        
+
         <div className={styles.column}>
           <h3 className={styles.logo}>FastRuns</h3>
           <p className={styles.description}>
-            FastRuns — платформа для каталога игр, рекордов и игрового комьюнити.
-            Открывай, сравнивай и делись достижениями.
+            FastRuns — платформа для каталогу ігор, рекордів та ігрового ком'юніті.
+            Відкривай, порівнюй і поділися здобутками.
           </p>
         </div>
 

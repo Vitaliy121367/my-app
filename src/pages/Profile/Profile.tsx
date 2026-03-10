@@ -108,7 +108,7 @@ export const Profile = () => {
                   <div className="d-flex gap-2">
                     {user.role === "moderator" && (
                       <NavLink to="/profile/ModerPanel" className="btn btn-outline-primary">
-                        Moder Panel
+                        Moder Panel Report
                       </NavLink>
                     )}
                     <NavLink to="/settings" className="btn btn-outline-primary">

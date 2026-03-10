@@ -46,9 +46,9 @@ export const Login = () => {
     password: {
       type: "password",
       label: "Password",
-      errorMessage: "Minimum 6 characters",
+      errorMessage: "",
       value: "",
-      validation: { required: true, minLength: 6 },
+      validation: { required: true, minLength: 8 },
       valid: false,
       touched: false,
     },
@@ -74,18 +74,36 @@ export const Login = () => {
     return isValid;
   };
 
+  const [passwordValidation, setPasswordValidation] = useState({
+    minLength: false,
+    hasUppercase: false,
+    hasLowercase: false,
+  });
+
+  const getPasswordValidation = (value: string) => {
+    return {
+      minLength: value.length >= 8,
+      hasUppercase: /[A-Z]/.test(value),
+      hasLowercase: /[a-z]/.test(value),
+    };
+  };
+
   const onChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>,
     controlName: keyof FormControls
   ) => {
     const updatedControls = { ...formControls };
     const control = { ...updatedControls[controlName] };
 
-    control.value = event.target.value;
+    control.value = e.target.value;
     control.touched = true;
     control.valid = validateControl(control.value, control.validation);
 
     updatedControls[controlName] = control;
+
+    if (controlName === "password") {
+      setPasswordValidation(getPasswordValidation(control.value));
+    }
 
     let formIsValid = true;
     Object.keys(updatedControls).forEach(
@@ -150,10 +168,24 @@ export const Login = () => {
                       errorMessage={control.errorMessage}
                       shouldValidate={!!control.validation}
                       onChange={(e: any) => onChangeHandler(e, controlName as keyof FormControls)}
+                      autoComplete={control.type === "password" ? "new-password" : "on"}
+                      spellCheck={control.type === "password" ? false : undefined}
                     />
                   );
                 })}
-
+                {formControls.password.touched && (
+                  <ul style={{ listStyle: "none", padding: 0, marginTop: "0.5rem" }}>
+                    <li style={{ color: passwordValidation.minLength ? "green" : "red" }}>
+                      {passwordValidation.minLength ? "✔" : "✖"} Minimum 8 characters
+                    </li>
+                    <li style={{ color: passwordValidation.hasUppercase ? "green" : "red" }}>
+                      {passwordValidation.hasUppercase ? "✔" : "✖"} At least one uppercase letter
+                    </li>
+                    <li style={{ color: passwordValidation.hasLowercase ? "green" : "red" }}>
+                      {passwordValidation.hasLowercase ? "✔" : "✖"} At least one lowercase letter
+                    </li>
+                  </ul>
+                )}
                 {error && <div className="alert alert-danger mt-3">{error}</div>}
 
                 <Button type="submit" disabled={!isFormValid}>

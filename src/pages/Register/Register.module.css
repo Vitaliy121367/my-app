@@ -1,20 +1,21 @@
 .title{
   text-align: center;
   color: red;
-  padding-top: 4.8%;
 }
 
 .registerContainer{
-  display: flex;
-  justify-content: center;
   align-items: center;
 }
 
-.page {
-  min-height: 100vh;       
+.page{
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-.content {
-  flex: 1;                 
+
+.content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment } from "react";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
 import { Navbar } from "../../components/Navbar/Navbar";
-import styles from "./ModerPanel.module.css";
+import styles from "./ModerPanelReport.module.css";
 import axios from "axios";
 
 const LIMIT = 10;
@@ -52,6 +52,7 @@ export const ModerPanel = () => {
     const { filteredReports, rejectedReports } = reports.reduce(
         (acc, r) => {
             const pass =
+                r.type !== "comment" &&
                 r.toUserId?._id !== currentUser?._id &&
                 r.fromUserId?._id !== currentUser?._id &&
                 (r.toRecordId?.status === "approved" || r.type === "checked");
@@ -70,8 +71,10 @@ export const ModerPanel = () => {
         { filteredReports: [], rejectedReports: [] }
     );
 
-    if (rejectedReports.length > 0) {
-        for (let r of rejectedReports) {
+    useEffect(() => {
+        if (rejectedReports.length === 0) return;
+
+        rejectedReports.forEach((r: any) => {
             axios.delete(
                 `http://localhost:4000/api/comments/${r._id}`,
                 {
@@ -79,9 +82,10 @@ export const ModerPanel = () => {
                         Authorization: `Bearer ${token}`
                     }
                 }
-            );
-        }
-    }
+            ).catch(err => console.error(err));
+        });
+
+    }, [rejectedReports]);
 
     return (
         <div
@@ -102,7 +106,7 @@ export const ModerPanel = () => {
 
                 {!loading && !error && (
                     <div className="container py-4">
-                        <h1 className={styles.title}>ModerPanel</h1>
+                        <h1 className={styles.title}>ModerPanelReport</h1>
 
                         <div className="d-flex gap-3 mb-3 flex-wrap">
                             <button

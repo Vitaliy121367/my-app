@@ -31,9 +31,12 @@ export const Record = () => {
 
   const [reportText, setReportText] = useState<string>("");
 
+  const [formError, setFormError] = useState<string>("");
+
   const user = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user") || "{}")
     : null;
+
   const token = localStorage.getItem("token");
 
   const [mode, setMode] = useState<"comment" | "report">("comment");
@@ -52,10 +55,14 @@ export const Record = () => {
         setLoading(true);
         setError(null);
 
-        const recRes = await axios.get(`http://localhost:4000/api/records/record?id=${id}`);
+        const recRes = await axios.get(
+          `http://localhost:4000/api/records/record?id=${id}`
+        );
         setRecord(recRes.data);
 
-        const commRes = await axios.get(`http://localhost:4000/api/comments/comments?toRecordId=${id}`);
+        const commRes = await axios.get(
+          `http://localhost:4000/api/comments/comments?toRecordId=${id}`
+        );
         setComments(commRes.data);
       } catch (err: any) {
         setError(err.response?.data?.message || err.message);
@@ -69,13 +76,17 @@ export const Record = () => {
 
   const handleReply = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError("");
+
     if (!replyText.trim() || !user) return;
+
     const gameId = record.gameId?._id || null;
+
     if (rating === 0) {
-      alert("Please provide a rating for your comment.");
+      setFormError("Please provide a rating for your comment.");
       return;
     }
-    const ratingValue = rating;
+
     const newComment = {
       text: replyText,
       fromUserId: user._id,
@@ -84,24 +95,31 @@ export const Record = () => {
       toRecordId: id,
       gameId,
       type: "comment",
-      rating: ratingValue,
+      rating,
     };
 
     try {
-      const res = await axios.post("http://localhost:4000/api/comments/create", newComment, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.post(
+        "http://localhost:4000/api/comments/create",
+        newComment,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       setComments([...comments, res.data]);
       setReplyText("");
       setReplyTo(null);
       setRating(0);
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+      setFormError(err.response?.data?.message || err.message);
     }
   };
 
   const handleReportRecord = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError("");
+
     if (!reportText.trim() || !user) return;
 
     const gameId = record.gameId?._id || null;
@@ -118,17 +136,23 @@ export const Record = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:4000/api/comments/create", reportComment, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.post(
+        "http://localhost:4000/api/comments/create",
+        reportComment,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       setComments([...comments, res.data]);
       setReportText("");
     } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+      setFormError(err.response?.data?.message || err.message);
     }
   };
 
   if (loading) return <Loader />;
+
   if (error)
     return (
       <>
@@ -137,6 +161,7 @@ export const Record = () => {
         <Footer />
       </>
     );
+
   if (!record) return null;
 
   const getEmbedUrl = (url: string) => {
@@ -156,30 +181,41 @@ export const Record = () => {
 
   const renderComments = (parentId: string | null = null, level = 0) => {
     return comments
-      .filter(c => (c.toCommentId || null) === parentId)
-      .map(c => {
-        const replies = comments.filter(r => r.toCommentId === c._id);
+      .filter((c) => (c.toCommentId || null) === parentId)
+      .map((c) => {
         const isCollapsed = collapsed[c._id] ?? false;
-        const isRecordOwner = user && user._id === record.userId._id;
 
         return (
-          <div key={c._id} className="mb-2" style={{ marginLeft: level ? 40 : 0 }}>
+          <div
+            key={c._id}
+            className="mb-2"
+            style={{ marginLeft: level ? 40 : 0 }}
+          >
             <div className={`card ${styles.body}`}>
               <div className="card-body d-flex align-items-start gap-2">
                 <img
-                  src={c.fromUserId.icon || "https://cdn-icons-png.freepik.com/256/12225/12225881.png?semt=ais_white_label"}
+                  src={
+                    c.fromUserId.icon ||
+                    "https://cdn-icons-png.freepik.com/256/12225/12225881.png?semt=ais_white_label"
+                  }
                   className="rounded-circle"
                   width="40"
                   height="40"
                   alt="User Icon"
                 />
                 <div>
-                  <strong>{c.fromUserId.name}</strong>{" "}
-                  {c.type === "comment" && <span className="ms-2">{renderStars(c.rating)}</span>}
-                  {c.type === "report" && <span className="text-danger ms-2">(Reported)</span>}
+                  <strong>{c.fromUserId.name}</strong>
+
+                  {c.type === "comment" && (
+                    <span className="ms-2">{renderStars(c.rating)}</span>
+                  )}
+
+                  {c.type === "report" && (
+                    <span className="text-danger ms-2">(Reported)</span>
+                  )}
+
                   <p className="mb-1">{c.text}</p>
-                  <div className="d-flex gap-2">
-                  </div>
+
                   {!isCollapsed && renderComments(c._id, level + 1)}
                 </div>
               </div>
@@ -192,7 +228,9 @@ export const Record = () => {
   return (
     <div
       style={{
-        backgroundImage: record.userId?.background ? `url(${record.userId.background})` : undefined,
+        backgroundImage: record.userId?.background
+          ? `url(${record.userId.background})`
+          : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
         minHeight: "100vh",
@@ -202,9 +240,13 @@ export const Record = () => {
 
       <div className="container py-4">
         <h1 className={`card-title ${styles.title}`}>Record</h1>
+
         <div className="profile-header p-4 mb-4 d-flex align-items-center">
           <img
-            src={record.userId?.icon || "https://cdn-icons-png.freepik.com/256/12225/12225881.png?semt=ais_white_label"}
+            src={
+              record.userId?.icon ||
+              "https://cdn-icons-png.freepik.com/256/12225/12225881.png?semt=ais_white_label"
+            }
             className="rounded-circle me-3"
             width="80"
             height="80"
@@ -220,7 +262,10 @@ export const Record = () => {
           <div>Platform: {record.platform}</div>
           <div>Time: {record.time}</div>
           <div>Version: {record.version}</div>
-          <div>Date Upload: {new Date(record.dateUpload).toLocaleDateString()}</div>
+          <div>
+            Date Upload: {new Date(record.dateUpload).toLocaleDateString()}
+          </div>
+
           <iframe
             loading="lazy"
             className={styles.video}
@@ -297,6 +342,12 @@ export const Record = () => {
                 Switch to {mode === "comment" ? "Report" : "Comment"}
               </button>
             </div>
+
+            {formError && (
+              <div className="alert alert-danger mt-2 w-100">
+                {formError}
+              </div>
+            )}
           </div>
         )}
 

@@ -3,6 +3,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
 import styles from "./News.module.css";
+import axios from "axios";
 
 interface NewsItem {
     title: string;
@@ -25,20 +26,14 @@ export const News = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const API_KEY = "pub_a071761da1964d07b5963f72ba6b181b";
+                const res = await axios.get("http://localhost:4000/api/new");
 
-                const res = await fetch(
-                    `https://newsdata.io/api/1/latest?apikey=${API_KEY}&qInTitle=video game`
-                );
-
-                const data = await res.json();
-
-                const newsItems: NewsItem[] = data.results.map((item: any) => ({
+                const newsItems: NewsItem[] = res.data.map((item: any) => ({
                     title: item.title || "No title",
-                    summary: item.description || "",
-                    image: item.image_url || "",
-                    url: item.link || "",
-                    date: item.pubDate || new Date().toISOString(),
+                    summary: item.summary || item.description || "",
+                    image: item.image || item.image_url || "",
+                    url: item.url || item.link || "",
+                    date: item.date || item.pubDate || new Date().toISOString(),
                 }));
 
                 setNews(newsItems);
@@ -74,14 +69,13 @@ export const News = () => {
                         <h1 className={styles.title}>Video Games News</h1>
                         {news.length > 0 ? (
                             <div className="row g-4">
-                                {news.slice(0, 9).map((item, index) => (
+                                {news.map((item, index) => (
                                     <div key={index} className="col-md-4">
                                         <div className={`card ${styles.card}`}>
                                             <div className={styles.imageWrapper}>
                                                 <img
-                                                    src={item.image || "https://via.placeholder.com/300x180"}
+                                                    src={item.image}
                                                     alt={item.title}
-                                                    loading="lazy"
                                                 />
                                             </div>
 
