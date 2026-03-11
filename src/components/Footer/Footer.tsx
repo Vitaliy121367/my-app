@@ -24,25 +24,13 @@ export const Footer = () => {
           </ul>
         </div>
 
-
-        <div className={styles.column}>
-          <h4>Resources</h4>
-          <ul>
-            <li><a href="#">Support</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-          </ul>
-        </div>
-
-
         <div className={styles.column}>
           <h4>Contact</h4>
           <ul>
             <li>Email: supportFastRuns@gmail.com</li>
             <li>Location: Ukraine</li>
             <li className={styles.socials}>
-              <a href="https://github.com/Vitaliy121367/my-app">GitHub</a>
-              <a href="#">Twitter</a>
-              <a href="#">Discord</a>
+              <a href="https://github.com/Vitaliy121367/my-app">GitHub App</a>
             </li>
           </ul>
         </div>

@@ -12,7 +12,7 @@ import { LastLoaded } from './pages/LastLoaded/LastLoaded';
 import { Settings } from './pages/Settings/Settings';
 import { Record } from './pages/Record/Record';
 import { AddRecord } from './pages/AddRecord/AddRecord';
-import { ModerPanel } from './pages/ModerPanelReport/ModerPanelReport';
+import { ModerPanel } from './pages/ModerPanel/ModerPanel';
 
 function App() {
   return (

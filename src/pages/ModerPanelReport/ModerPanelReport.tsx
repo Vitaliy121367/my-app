@@ -1,363 +1,203 @@
 import { useEffect, useState, Fragment } from "react";
-import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
-import { Navbar } from "../../components/Navbar/Navbar";
 import styles from "./ModerPanelReport.module.css";
 import axios from "axios";
 
 const LIMIT = 10;
 
-export const ModerPanel = () => {
-    const [reports, setReports] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+export const ModerPanelReport = () => {
+  const [reports, setReports] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filterType, setFilterType] = useState<"all" | "checked" | "report">("all");
+  const [openReportId, setOpenReportId] = useState<string | null>(null);
 
-    const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+  const currentUser = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user") || "{}")
+    : null;
+  const token = localStorage.getItem("token");
+  const [bg] = useState(currentUser ? currentUser.background : null);
 
-    const [filterType, setFilterType] = useState<"all" | "checked" | "report">("all");
-    const [openReportId, setOpenReportId] = useState<string | null>(null);
+  useEffect(() => {
+    setLoading(true);
+    setError(null);
 
-    const currentUser = localStorage.getItem("user")
-        ? JSON.parse(localStorage.getItem("user") || "{}")
-        : null;
-    const token = localStorage.getItem("token");
-    const [bg] = useState(currentUser ? currentUser.background : null);
-
-    useEffect(() => {
-        setLoading(true);
-        setError(null);
-
-        axios
-            .get("http://localhost:4000/api/comments/reports", {
-                params: {
-                    page,
-                    limit: LIMIT,
-                    type: filterType !== "all" ? filterType : undefined,
-                },
-            })
-            .then((res) => {
-                setReports(res.data.data || []);
-                setTotalPages(res.data.pagination.pages || 1);
-            })
-            .catch((err) => setError(err.message))
-            .finally(() => setLoading(false));
-    }, [page, filterType]);
-
-    const getEmbedUrl = (url: string) => {
-        const match = url?.match(/^.*(?:youtu.be\/|v\/|watch\?v=|embed\/)([^#&?]*).*/);
-        return match ? `https://www.youtube.com/embed/${match[1]}` : url;
-    };
-
-    const { filteredReports, rejectedReports } = reports.reduce(
-        (acc, r) => {
-            const pass =
-                r.type !== "comment" &&
-                r.toUserId?._id !== currentUser?._id &&
-                r.fromUserId?._id !== currentUser?._id &&
-                (r.toRecordId?.status === "approved" || r.type === "checked");
-
-            if (pass) {
-                acc.filteredReports.push(r);
-            } else {
-                const exists = acc.rejectedReports.some((x: any) => x._id === r._id);
-                if (!exists) {
-                    acc.rejectedReports.push(r);
-                }
-            }
-
-            return acc;
+    axios
+      .get("http://localhost:4000/api/comments/reports", {
+        params: {
+          page,
+          type: filterType !== "all" ? filterType : undefined,
+          currentUserId: currentUser?._id, 
         },
-        { filteredReports: [], rejectedReports: [] }
-    );
+      })
+      .then((res) => {
+        setReports(res.data.data || []);
+        setTotalPages(res.data.pagination.pages || 1);
 
-    useEffect(() => {
-        if (rejectedReports.length === 0) return;
-
-        rejectedReports.forEach((r: any) => {
-            axios.delete(
-                `http://localhost:4000/api/comments/${r._id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            ).catch(err => console.error(err));
+        res.data.rejectedReports?.forEach((r: any) => {
+          axios.delete(`http://localhost:4000/api/comments/${r._id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }).catch(err => console.error(err));
         });
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [page, filterType]);
 
-    }, [rejectedReports]);
+  const getEmbedUrl = (url: string) => {
+    const match = url?.match(/^.*(?:youtu.be\/|v\/|watch\?v=|embed\/)([^#&?]*).*/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+  };
 
-    return (
-        <div
-            className={styles.page_container}
-            style={{
-                backgroundImage: `url(${bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
-        >
-            <Navbar />
+  const checkReport = (id: string) => {
+    axios.patch(
+      `http://localhost:4000/api/comments/${id}`,
+      { type: "checked" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    .then(() => setReports(prev => prev.map(r => r._id === id ? { ...r, type: "checked" } : r)))
+    .catch(err => console.error(err));
+  };
 
-            <main className={styles.content}>
-                {loading && <Loader />}
-                {!loading && error && (
-                    <div className="text-danger text-center py-5">{error}</div>
-                )}
+  const removeRecord = (recordId: string, commentId: string) => {
+    axios.delete(`http://localhost:4000/api/records/${recordId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(err => console.error(err));
 
-                {!loading && !error && (
-                    <div className="container py-4">
-                        <h1 className={styles.title}>ModerPanelReport</h1>
+    axios.patch(
+      `http://localhost:4000/api/comments/${commentId}`,
+      { type: "checked" },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    .then(() => setReports(prev => prev.map(r => r._id === commentId ? { ...r, type: "checked" } : r)))
+    .catch(err => console.error(err));
+  };
 
-                        <div className="d-flex gap-3 mb-3 flex-wrap">
-                            <button
-                                className={`btn ${filterType === "all" ? "btn-info" : "btn-outline-info"}`}
-                                onClick={() => {
-                                    setFilterType("all");
-                                    setPage(1);
-                                }}
-                            >
-                                All
-                            </button>
+  const blockUser = (userId: string, recordId: string, commentId: string) => {
+    axios.patch(`http://localhost:4000/api/auth/update/?id=${userId}`, { role: "blocked" }, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(err => console.error(err));
 
-                            <button
-                                className={`btn ${filterType === "report" ? "btn-danger" : "btn-outline-danger"}`}
-                                onClick={() => {
-                                    setFilterType("report");
-                                    setPage(1);
-                                }}
-                            >
-                                Report
-                            </button>
+    removeRecord(recordId, commentId);
+  };
 
-                            <button
-                                className={`btn ${filterType === "checked" ? "btn-success" : "btn-outline-success"}`}
-                                onClick={() => {
-                                    setFilterType("checked");
-                                    setPage(1);
-                                }}
-                            >
-                                Checked
-                            </button>
-                        </div>
+  return (
+    <div
+      className={styles.page_container}
+      style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover", backgroundPosition: "center" }}
+    >
+      <main className={styles.content}>
+        {loading && <Loader />}
+        {!loading && error && <div className="text-danger text-center py-5">{error}</div>}
 
-                        <div className={styles.table_responsive}>
-                            <table className="table table-dark table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Game</th>
-                                        <th>From User</th>
-                                        <th>To User</th>
-                                        <th>Record</th>
-                                        <th>Date</th>
-                                        <th>Type</th>
-                                    </tr>
-                                </thead>
+        {!loading && !error && (
+          <div className="container py-4">
+            <div className="d-flex gap-3 mb-3 flex-wrap">
+              <button
+                className={`btn ${filterType === "all" ? "btn-info" : "btn-outline-info"}`}
+                onClick={() => { setFilterType("all"); setPage(1); }}
+              >
+                All
+              </button>
+              <button
+                className={`btn ${filterType === "report" ? "btn-danger" : "btn-outline-danger"}`}
+                onClick={() => { setFilterType("report"); setPage(1); }}
+              >
+                Report
+              </button>
+              <button
+                className={`btn ${filterType === "checked" ? "btn-success" : "btn-outline-success"}`}
+                onClick={() => { setFilterType("checked"); setPage(1); }}
+              >
+                Checked
+              </button>
+            </div>
 
-                                <tbody>
-                                    {filteredReports.map((report: any, index: number) => (
-                                        <Fragment key={report._id}>
-                                            <tr>
-                                                <td>{(page - 1) * LIMIT + index + 1}</td>
-                                                <td>{report.gameId?.name}</td>
-                                                <td>{report.fromUserId?.name}</td>
-                                                <td>{report.toUserId?.name}</td>
-                                                <td
-                                                    style={{ cursor: "pointer", color: "#0d6efd" }}
-                                                    onClick={() =>
-                                                        setOpenReportId(openReportId === report._id ? null : report._id)
-                                                    }
-                                                >
-                                                    {report.toRecordId?._id}
-                                                </td>
-                                                <td>{new Date(report.dateUpload).toLocaleDateString()}</td>
-                                                <td>{report.type}</td>
-                                            </tr>
+            <div className={styles.table_responsive}>
+              <table className="table table-dark table-striped">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Game</th>
+                    <th>From User</th>
+                    <th>To User</th>
+                    <th>Record</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.map((report, index) => (
+                    <Fragment key={report._id}>
+                      <tr
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setOpenReportId(openReportId === report._id ? null : report._id)}
+                      >
+                        <td>{(page - 1) * LIMIT + index + 1}</td>
+                        <td>{report.gameId?.name}</td>
+                        <td>{report.fromUserId?.name}</td>
+                        <td>{report.toUserId?.name}</td>
+                        <td style={{ cursor: "pointer", color: "#0d6efd" }}>{report.toRecordId?._id}</td>
+                        <td>{new Date(report.dateUpload).toLocaleDateString()}</td>
+                        <td>{report.type}</td>
+                      </tr>
 
-                                            {openReportId === report._id && report.toRecordId && (
-                                                <tr>
-                                                    <td colSpan={7} className="bg-secondary">
-                                                        <div
-                                                            className="p-3"
-                                                            style={{
-                                                                maxWidth: "100%",
-                                                                wordBreak: "break-word",
-                                                                overflowX: "auto",
-                                                                whiteSpace: "pre-wrap",
-                                                            }}
-                                                        >
-                                                            <h5>Record Information</h5>
-                                                            <p><b>Game:</b> {report.gameId?.name}</p>
-                                                            <p><b>Status:</b> {report.toRecordId?.status}</p>
-                                                            <p><b>User:</b> {report.fromUserId?.name}</p>
-                                                            <p><b>Platform:</b> {report.toRecordId.platform}</p>
-                                                            <p><b>Time:</b> {report.toRecordId.time}</p>
-                                                            <p><b>Version:</b> {report.toRecordId.version}</p>
-                                                            <p style={{ wordBreak: "break-word" }}><b>Text:</b> {report.text}</p>
+                      {openReportId === report._id && report.toRecordId && (
+                        <tr>
+                          <td colSpan={7} className="bg-secondary">
+                            <div className="p-3">
+                              <h5>Record Information</h5>
+                              <p><b>Game:</b> {report.gameId?.name}</p>
+                              <p><b>Status:</b> {report.toRecordId?.status}</p>
+                              <p><b>User:</b> {report.fromUserId?.name}</p>
+                              <p><b>Platform:</b> {report.toRecordId?.platform}</p>
+                              <p><b>Time:</b> {report.toRecordId?.time}</p>
+                              <p><b>Version:</b> {report.toRecordId?.version}</p>
+                              <p style={{ wordBreak: "break-word" }}><b>Text:</b> {report.text}</p>
 
-                                                            {report.toRecordId.urlVideo && (
-                                                                <div className="ratio ratio-16x9">
-                                                                    <iframe
-                                                                        src={getEmbedUrl(report.toRecordId.urlVideo)}
-                                                                        allowFullScreen
-                                                                        title="video"
-                                                                    />
-                                                                </div>
-                                                            )}
-                                                            {report.type === "checked" && (
-                                                                <div className="d-flex gap-3 mb-3 flex-wrap">
-                                                                    <button
-                                                                        className="btn btn-danger"
-                                                                        onClick={() => {
-                                                                            axios.delete(
-                                                                                `http://localhost:4000/api/records/${report.toRecordId._id}`,
-                                                                                {
-                                                                                    headers: {
-                                                                                        Authorization: `Bearer ${token}`
-                                                                                    }
-                                                                                }
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        Remove Checked
-                                                                    </button>
-                                                                </div>
-                                                            )}
+                              {report.toRecordId.urlVideo && (
+                                <div className="ratio ratio-16x9">
+                                  <iframe src={getEmbedUrl(report.toRecordId.urlVideo)} allowFullScreen title="video" />
+                                </div>
+                              )}
 
-                                                            {report.type !== "checked" && (
-                                                                <div className="d-flex gap-3 mb-3 flex-wrap">
-                                                                    <button
-                                                                        className="btn btn-success"
-                                                                        onClick={() => {
-                                                                            axios
-                                                                                .patch(
-                                                                                    `http://localhost:4000/api/comments/${report._id}`,
-                                                                                    { type: "checked" },
-                                                                                    {
-                                                                                        headers: {
-                                                                                            Authorization: `Bearer ${token}`
-                                                                                        }
-                                                                                    }
-                                                                                )
-                                                                                .then(() => {
-                                                                                    setReports(prev =>
-                                                                                        prev.map(r =>
-                                                                                            r._id === report._id ? { ...r, type: "checked" } : r
-                                                                                        )
-                                                                                    );
-                                                                                })
-                                                                                .catch(err => {
-                                                                                    console.error(err);
-                                                                                });
-                                                                        }}
-                                                                    >
-                                                                        Check
-                                                                    </button>
-
-                                                                    <button className="btn btn-warning"
-                                                                        onClick={() => {
-                                                                            axios.delete(
-                                                                                `http://localhost:4000/api/records/${report.toRecordId._id}`,
-                                                                                {
-                                                                                    headers: {
-                                                                                        Authorization: `Bearer ${token}`
-                                                                                    }
-                                                                                }
-                                                                            )
-                                                                            axios.patch(
-                                                                                `http://localhost:4000/api/comments/${report._id}`,
-                                                                                { type: "checked" },
-                                                                                {
-                                                                                    headers: {
-                                                                                        Authorization: `Bearer ${token}`
-                                                                                    }
-                                                                                }
-                                                                            )
-                                                                                .then(() => {
-                                                                                    setReports(prev =>
-                                                                                        prev.map(r =>
-                                                                                            r._id === report._id ? { ...r, type: "checked" } : r
-                                                                                        )
-                                                                                    );
-                                                                                })
-                                                                                .catch(err => {
-                                                                                    console.error(err);
-                                                                                });
-                                                                        }}
-                                                                    >
-                                                                        Remove Record
-                                                                    </button>
-                                                                    <button className="btn btn-danger"
-                                                                        onClick={() => {
-                                                                            axios.patch(`http://localhost:4000/api/auth/update/?id=${report.toUserId._id}`,
-                                                                                { role: "blocked" },
-                                                                                {
-                                                                                    headers: {
-                                                                                        Authorization: `Bearer ${token}`
-                                                                                    }
-                                                                                }
-                                                                            )
-                                                                            axios.delete(
-                                                                                `http://localhost:4000/api/records/${report.toRecordId._id}`,
-                                                                                {
-                                                                                    headers: {
-                                                                                        Authorization: `Bearer ${token}`
-                                                                                    }
-                                                                                }
-                                                                            )
-                                                                            axios.patch(
-                                                                                `http://localhost:4000/api/comments/${report._id}`,
-                                                                                { type: "checked" },
-                                                                                {
-                                                                                    headers: {
-                                                                                        Authorization: `Bearer ${token}`
-                                                                                    }
-                                                                                }
-                                                                            )
-                                                                                .then(() => {
-                                                                                    setReports(prev =>
-                                                                                        prev.map(r =>
-                                                                                            r._id === report._id ? { ...r, type: "checked" } : r
-                                                                                        )
-                                                                                    );
-                                                                                })
-                                                                                .catch(err => {
-                                                                                    console.error(err);
-                                                                                });
-                                                                        }}
-                                                                    >
-                                                                        Block User
-                                                                    </button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </Fragment>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {totalPages > 1 && (
-                            <div className="d-flex justify-content-center mt-4 gap-2 flex-wrap">
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                                    <button
-                                        key={p}
-                                        className={`btn ${page === p ? "btn-info" : "btn-outline-info"}`}
-                                        onClick={() => setPage(p)}
-                                    >
-                                        {p}
-                                    </button>
-                                ))}
+                              <div className="d-flex gap-3 mb-3 flex-wrap">
+                                {report.type !== "checked" && (
+                                  <button className="btn btn-success" onClick={() => checkReport(report._id)}>Check</button>
+                                )}
+                                {report.type !== "checked" && (
+                                  <button className="btn btn-warning" onClick={() => removeRecord(report.toRecordId._id, report._id)}>Remove Record</button>
+                                )}
+                                <button className="btn btn-danger" onClick={() => blockUser(report.toUserId._id, report.toRecordId._id, report._id)}>Block User</button>
+                              </div>
                             </div>
-                        )}
-                    </div>
-                )}
-            </main>
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-            <Footer />
-        </div>
-    );
+            {totalPages > 1 && (
+              <div className="d-flex justify-content-center mt-4 gap-2 flex-wrap">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <button
+                    key={p}
+                    className={`btn ${page === p ? "btn-info" : "btn-outline-info"}`}
+                    onClick={() => setPage(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
+  );
 };

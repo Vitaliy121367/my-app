@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import styles from "./Login.module.css";
@@ -33,6 +33,7 @@ export const Login = () => {
 
   const [isFormValid, setIsFormValid] = useState(false);
   const [error, setError] = useState("");
+
   const [formControls, setFormControls] = useState<FormControls>({
     email: {
       type: "email",
@@ -46,9 +47,9 @@ export const Login = () => {
     password: {
       type: "password",
       label: "Password",
-      errorMessage: "",
+      errorMessage: "Enter your password",
       value: "",
-      validation: { required: true, minLength: 8 },
+      validation: { required: true },
       valid: false,
       touched: false,
     },
@@ -74,20 +75,6 @@ export const Login = () => {
     return isValid;
   };
 
-  const [passwordValidation, setPasswordValidation] = useState({
-    minLength: false,
-    hasUppercase: false,
-    hasLowercase: false,
-  });
-
-  const getPasswordValidation = (value: string) => {
-    return {
-      minLength: value.length >= 8,
-      hasUppercase: /[A-Z]/.test(value),
-      hasLowercase: /[a-z]/.test(value),
-    };
-  };
-
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement>,
     controlName: keyof FormControls
@@ -101,13 +88,12 @@ export const Login = () => {
 
     updatedControls[controlName] = control;
 
-    if (controlName === "password") {
-      setPasswordValidation(getPasswordValidation(control.value));
-    }
-
     let formIsValid = true;
+
     Object.keys(updatedControls).forEach(
-      (name) => (formIsValid = updatedControls[name as keyof FormControls].valid && formIsValid)
+      (name) =>
+        (formIsValid =
+          updatedControls[name as keyof FormControls].valid && formIsValid)
     );
 
     setFormControls(updatedControls);
@@ -132,11 +118,11 @@ export const Login = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-
       localStorage.setItem("user", JSON.stringify(resUser.data));
+
       navigate("/");
     } catch (err: any) {
-      if (err.response && err.response.data && err.response.data.message) {
+      if (err.response?.data?.message) {
         setError(err.response.data.message);
       } else {
         setError("Error logging in. Please try again.");
@@ -156,7 +142,9 @@ export const Login = () => {
             <div className="col-sm-10 col-md-6 col-lg-5 mx-auto">
               <form onSubmit={submitHandler}>
                 {Object.keys(formControls).map((controlName) => {
-                  const control = formControls[controlName as keyof FormControls];
+                  const control =
+                    formControls[controlName as keyof FormControls];
+
                   return (
                     <Input
                       key={controlName}
@@ -167,26 +155,21 @@ export const Login = () => {
                       touched={control.touched}
                       errorMessage={control.errorMessage}
                       shouldValidate={!!control.validation}
-                      onChange={(e: any) => onChangeHandler(e, controlName as keyof FormControls)}
-                      autoComplete={control.type === "password" ? "new-password" : "on"}
-                      spellCheck={control.type === "password" ? false : undefined}
+                      onChange={(e: any) =>
+                        onChangeHandler(e, controlName as keyof FormControls)
+                      }
+                      autoComplete={
+                        control.type === "password"
+                          ? "current-password"
+                          : "on"
+                      }
                     />
                   );
                 })}
-                {formControls.password.touched && (
-                  <ul style={{ listStyle: "none", padding: 0, marginTop: "0.5rem" }}>
-                    <li style={{ color: passwordValidation.minLength ? "green" : "red" }}>
-                      {passwordValidation.minLength ? "✔" : "✖"} Minimum 8 characters
-                    </li>
-                    <li style={{ color: passwordValidation.hasUppercase ? "green" : "red" }}>
-                      {passwordValidation.hasUppercase ? "✔" : "✖"} At least one uppercase letter
-                    </li>
-                    <li style={{ color: passwordValidation.hasLowercase ? "green" : "red" }}>
-                      {passwordValidation.hasLowercase ? "✔" : "✖"} At least one lowercase letter
-                    </li>
-                  </ul>
+
+                {error && (
+                  <div className="alert alert-danger mt-3">{error}</div>
                 )}
-                {error && <div className="alert alert-danger mt-3">{error}</div>}
 
                 <Button type="submit" disabled={!isFormValid}>
                   Log In
@@ -195,7 +178,6 @@ export const Login = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       <Footer />

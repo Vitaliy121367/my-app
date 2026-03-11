@@ -19,3 +19,40 @@
 .content {
   flex: 1;                 
 }
+
+.accordion {
+  --bs-accordion-bg: transparent;
+  --bs-accordion-border-color: transparent;
+  --bs-accordion-active-bg: transparent;
+}
+
+.accordionItem {
+  background: transparent;
+  border: none;
+}
+
+.accordionHeader {
+  background: rgb(83, 14, 21);
+  color: #dc3545;
+  border-radius: 15px;
+  font-weight: 600;
+}
+
+.accordionHeader:hover {
+  background: rgb(220, 53, 70);
+}
+
+.accordionHeader:not(.collapsed) {
+  background: rgb(119, 16, 16);
+  color: #000000;
+  box-shadow: none;
+}
+
+.accordionHeader:focus {
+  box-shadow: none;
+}
+
+.accordionBody {
+  background: rgb(25, 27, 140);
+  padding: 20px;
+}
