@@ -14,7 +14,7 @@ export const ModerPanel = () => {
   const navigate = useNavigate();
     const [bg] = useState(currentUser ? currentUser.background : null);
     useEffect(() => {
-        if (!currentUser || currentUser.role !== "moderator" || currentUser.role !== "admin") navigate("/");
+        if (!currentUser || currentUser.role !== "moderator" && currentUser.role !== "admin") navigate("/");
     }, [currentUser, navigate]);
     return (
         <div

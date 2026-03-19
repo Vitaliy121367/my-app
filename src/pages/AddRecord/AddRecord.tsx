@@ -23,37 +23,49 @@ export const AddRecord = () => {
     const [platform, setPlatform] = useState<Platform | null>(null);
     const [urlVideo, setUrlVideo] = useState("");
     const [version, setVersion] = useState("");
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (!id) return;
+
         setLoading(true);
-        axios.get(`http://localhost:4000/api/games/${id}`)
+
+        axios
+            .get(`http://localhost:4000/api/games/${id}`)
             .then(res => setGame(res.data))
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
     }, [id]);
 
     const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setErrorMessage(null);
         setTime({ ...time, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setErrorMessage(null);
 
         if (!platform) {
-            alert("Select platform");
+            setErrorMessage("Select platform");
             return;
         }
 
         if (!game.platform.includes(platform)) {
-            alert(`This game does not support platform: ${platform}`);
+            setErrorMessage(`This game does not support platform: ${platform}`);
             return;
         }
 
         if (!time.hours || !time.minutes || !time.seconds) {
-            alert("Enter full time");
+            setErrorMessage("Enter full time");
+            return;
+        }
+
+        if (!urlVideo.trim()) {
+            setErrorMessage("Enter video link");
             return;
         }
 
@@ -77,62 +89,119 @@ export const AddRecord = () => {
             await axios.post("http://localhost:4000/api/records", record, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
             navigate(`/games/${id}`);
         } catch (err: any) {
-            alert(err.message);
+            setErrorMessage(err.response?.data?.message || err.message);
         }
     };
+
     useEffect(() => {
         if (!user || user.role === "blocked") {
             navigate("/");
         }
     }, [user, navigate]);
-    
+
     if (loading) return <div className="text-center py-5">Loading...</div>;
     if (error) return <div className="text-danger text-center py-5">{error}</div>;
+
     return (
-        <div
-            style={{
-                backgroundImage: `url(${bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                minHeight: "100vh"
-            }}
-        >
+        <div>
             <Navbar />
 
-            <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
+            <div
+                className="d-flex flex-column justify-content-center align-items-center"
+                style={{ minHeight: "80vh" }}
+            >
                 <h1 className={styles.title}>AddRecord</h1>
 
-                <form className="container" style={{ maxWidth: "500px" }} onSubmit={handleSubmit}>
+                <form
+                    className="container"
+                    style={{ maxWidth: "500px" }}
+                    onSubmit={handleSubmit}
+                >
                     <div className="mb-3">
-                        <label className={`form-label ${styles.title}`}>Time address</label>
+                        <label className={`form-label ${styles.title}`}>
+                            Time address
+                        </label>
+
                         <div className="d-flex gap-2">
-                            <input type="number" name="hours" className="form-control" placeholder="HH" min="0" max="23" value={time.hours} onChange={handleTimeChange} />
-                            <input type="number" name="minutes" className="form-control" placeholder="MM" min="0" max="59" value={time.minutes} onChange={handleTimeChange} />
-                            <input type="number" name="seconds" className="form-control" placeholder="SS" min="0" max="59" value={time.seconds} onChange={handleTimeChange} />
+                            <input
+                                type="number"
+                                name="hours"
+                                className="form-control"
+                                placeholder="HH"
+                                min="0"
+                                max="23"
+                                value={time.hours}
+                                onChange={handleTimeChange}
+                            />
+
+                            <input
+                                type="number"
+                                name="minutes"
+                                className="form-control"
+                                placeholder="MM"
+                                min="0"
+                                max="59"
+                                value={time.minutes}
+                                onChange={handleTimeChange}
+                            />
+
+                            <input
+                                type="number"
+                                name="seconds"
+                                className="form-control"
+                                placeholder="SS"
+                                min="0"
+                                max="59"
+                                value={time.seconds}
+                                onChange={handleTimeChange}
+                            />
                         </div>
                     </div>
 
                     <div className="mb-3">
                         <label className={`form-label ${styles.title}`}>Link</label>
-                        <input type="url" className="form-control" placeholder="https://example.com" value={urlVideo} onChange={(e) => setUrlVideo(e.target.value)} required />
+
+                        <input
+                            type="url"
+                            className="form-control"
+                            placeholder="https://example.com"
+                            value={urlVideo}
+                            onChange={(e) => {
+                                setErrorMessage(null);
+                                setUrlVideo(e.target.value);
+                            }}
+                        />
                     </div>
 
-                    <div className="btn-group mt-3 w-100">
+                    <div className="mt-3 row">
                         {(["PC", "Console", "Phone"] as Platform[])
                             .filter(p => game.platform.includes(p))
                             .map(p => (
-                                <div key={p}>
+                                <div key={p} className="col">
                                     <input
                                         type="radio"
                                         className="btn-check"
                                         id={p}
                                         checked={platform === p}
-                                        onChange={() => setPlatform(p)}
+                                        onChange={() => {
+                                            setErrorMessage(null);
+                                            setPlatform(p);
+                                        }}
                                     />
-                                    <label className={`btn btn-outline-${p === "PC" ? "success" : p === "Console" ? "warning" : "primary"}`} htmlFor={p}>
+
+                                    <label
+                                        className={`btn btn-outline-${
+                                            p === "PC"
+                                                ? "success"
+                                                : p === "Console"
+                                                ? "warning"
+                                                : "primary"
+                                        }`}
+                                        htmlFor={p}
+                                    >
                                         {p}
                                     </label>
                                 </div>
@@ -140,11 +209,31 @@ export const AddRecord = () => {
                     </div>
 
                     <div className="mb-3 mt-3">
-                        <label className={`form-label ${styles.title}`}>Version</label>
-                        <input type="text" className="form-control" placeholder="1.0 / v1.2.3" value={version} onChange={(e) => setVersion(e.target.value)} required />
+                        <label className={`form-label ${styles.title}`}>
+                            Version
+                        </label>
+
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="1.0 / v1.2.3"
+                            value={version}
+                            onChange={(e) => {
+                                setErrorMessage(null);
+                                setVersion(e.target.value);
+                            }}
+                        />
                     </div>
 
-                    <button type="submit" className="btn btn-primary mt-4 w-100">Submit</button>
+                    {errorMessage && (
+                        <div className="alert alert-danger text-center">
+                            {errorMessage}
+                        </div>
+                    )}
+
+                    <button type="submit" className="btn btn-primary w-100">
+                        Submit
+                    </button>
                 </form>
             </div>
 

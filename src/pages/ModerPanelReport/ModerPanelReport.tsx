@@ -18,7 +18,6 @@ export const ModerPanelReport = () => {
     ? JSON.parse(localStorage.getItem("user") || "{}")
     : null;
   const token = localStorage.getItem("token");
-  const [bg] = useState(currentUser ? currentUser.background : null);
 
   useEffect(() => {
     setLoading(true);
@@ -86,7 +85,6 @@ export const ModerPanelReport = () => {
   return (
     <div
       className={styles.page_container}
-      style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover", backgroundPosition: "center" }}
     >
       <main className={styles.content}>
         {loading && <Loader />}

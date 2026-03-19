@@ -111,6 +111,11 @@ export const Profile = () => {
                         Moder Panel
                       </NavLink>
                     )}
+                    {user.role === "admin" && (
+                      <NavLink to="/profile/AdminPanel" className="btn btn-outline-primary">
+                        Admin Panel
+                      </NavLink>
+                    )}
                     <NavLink to="/settings" className="btn btn-outline-primary">
                       Settings
                     </NavLink>

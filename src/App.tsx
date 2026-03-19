@@ -13,6 +13,8 @@ import { Settings } from './pages/Settings/Settings';
 import { Record } from './pages/Record/Record';
 import { AddRecord } from './pages/AddRecord/AddRecord';
 import { ModerPanel } from './pages/ModerPanel/ModerPanel';
+import { AdminPanel } from './pages/AdminPanel/AdminPanel';
+import { Verify } from './pages/Verify/Verify';
 
 function App() {
   return (
@@ -28,8 +30,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/ModerPanel" element={<ModerPanel />} />
+          <Route path="/profile/AdminPanel" element={<AdminPanel />} />
           <Route path="/record/:id" element={<Record />} />
           <Route path="/addrecord/:id" element={<AddRecord />} />
+          <Route path="/verify/:token" element={<Verify />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
