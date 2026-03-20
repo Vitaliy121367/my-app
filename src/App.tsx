@@ -15,6 +15,7 @@ import { AddRecord } from './pages/AddRecord/AddRecord';
 import { ModerPanel } from './pages/ModerPanel/ModerPanel';
 import { AdminPanel } from './pages/AdminPanel/AdminPanel';
 import { Verify } from './pages/Verify/Verify';
+import { VerifyEditEmail } from './pages/VerifyEditEmail/VerifyEditEmail';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/record/:id" element={<Record />} />
           <Route path="/addrecord/:id" element={<AddRecord />} />
           <Route path="/verify/:token" element={<Verify />} />
+          <Route path="/verify-edit/:token" element={<VerifyEditEmail />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

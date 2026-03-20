@@ -75,7 +75,7 @@ export const LastLoaded = () => {
                 )}
 
                 {!loading && !error && lastLoaded.length === 0 && (
-                    <div className="text-center py-5">
+                    <div className={`${style.title} text-center py-5`}>
                         No approved records found.
                     </div>
                 )}

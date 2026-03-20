@@ -100,27 +100,27 @@ export const Game = () => {
 
     return (
         <div
+            className={styles.page}
             style={{
                 backgroundImage: `url(${bg})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
-                minHeight: "100vh",
             }}
         >
             <Navbar />
 
-            {loading && <Loader />}
+            <div className={styles.content}>
+                {loading && <Loader />}
 
-            {!loading && error && (
-                <div className="text-danger text-center py-5">
-                    Error: {error}
-                </div>
-            )}
+                {!loading && error && (
+                    <div className="text-danger text-center py-5">
+                        Error: {error}
+                    </div>
+                )}
 
-            {!loading && !error && game && (
-                <div>
-                    <div className={`${styles.page} container py-4`}>
+                {!loading && !error && game && (
+                    <div className="container py-4">
                         <h1 className={`card-title ${styles.gameTitle}`}>
                             {game.name}
                         </h1>
@@ -137,7 +137,7 @@ export const Game = () => {
                                     <strong>Year:</strong> {game.year}
                                 </p>
 
-                                {user?.role !== "blocked" && user !== null && (
+                                {user?.role !== "blocked" && user && (
                                     <NavLink
                                         to={`/addrecord/${game._id}`}
                                         className="btn btn-primary"
@@ -149,10 +149,7 @@ export const Game = () => {
 
                             <div className="card-body">
                                 {game.platform.map((p: string) => (
-                                    <span
-                                        key={p}
-                                        className="badge bg-secondary me-1"
-                                    >
+                                    <span key={p} className="badge bg-secondary me-1">
                                         {p}
                                     </span>
                                 ))}
@@ -166,17 +163,12 @@ export const Game = () => {
                                 className="form-control"
                                 placeholder="Search user..."
                                 value={inputValue}
-                                onChange={(e) =>
-                                    setInputValue(e.target.value)
-                                }
+                                onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) =>
                                     e.key === "Enter" && handleSearch()
                                 }
                             />
-                            <button
-                                className="btn btn-warning"
-                                onClick={handleSearch}
-                            >
+                            <button className="btn btn-warning" onClick={handleSearch}>
                                 Search
                             </button>
                         </div>
@@ -208,11 +200,7 @@ export const Game = () => {
                                         <tr
                                             key={record._id}
                                             style={{ cursor: "pointer" }}
-                                            onClick={() =>
-                                                navigate(
-                                                    `/record/${record._id}`
-                                                )
-                                            }
+                                            onClick={() => navigate(`/record/${record._id}`)}
                                         >
                                             <td>{index + 1}</td>
                                             <td>{record.userId?.name}</td>
@@ -230,11 +218,10 @@ export const Game = () => {
                             </table>
                         </div>
                     </div>
+                )}
+            </div>
 
-                    <Footer />
-                </div>
-            )}
-
+            <Footer />
         </div>
     );
 };

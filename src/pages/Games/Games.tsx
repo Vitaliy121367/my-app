@@ -14,8 +14,8 @@ export const Games = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
 
-  const [inputValue, setInputValue] = useState(""); 
-  const [search, setSearch] = useState(""); 
+  const [inputValue, setInputValue] = useState("");
+  const [search, setSearch] = useState("");
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -49,17 +49,17 @@ export const Games = () => {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setSearch(inputValue); 
+      setSearch(inputValue);
     }
   };
 
   return (
     <div
+      className={styles.page}
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        minHeight: "100vh",
       }}
     >
       <Navbar />

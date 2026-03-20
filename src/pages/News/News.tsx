@@ -49,74 +49,76 @@ export const News = () => {
     }, []);
 
     return (
-        <div
-            className={styles.page}
-            style={{
-                backgroundImage: `url(${bg})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                minHeight: "100vh"
-            }}
-        >
-            <Navbar />
-            {loading && <Loader />}
-            {!loading && error && (
-                <div className="text-danger text-center py-5">{error}</div>
-            )}
-            {!loading && !error && (
-                <div>
-                    <div className="container py-4">
-                        <h1 className={styles.title}>Video Games News</h1>
-                        {news.length > 0 ? (
-                            <div className="row g-4">
-                                {news.map((item, index) => (
-                                    <div key={index} className="col-md-4">
-                                        <div className={`card ${styles.card}`}>
-                                            <div className={styles.imageWrapper}>
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.title}
-                                                />
-                                            </div>
+  <div
+    className={styles.page}
+    style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  >
+    <Navbar />
 
-                                            <div className="card-body d-flex flex-column">
-                                                <h5 className={`card-title ${styles.titleText}`}>
-                                                    {item.title}
-                                                </h5>
+    <div className={styles.content}>
+      {loading && <Loader />}
 
-                                                <p className={`card-text ${styles.summary}`}>
-                                                    {item.summary}
-                                                </p>
+      {!loading && error && (
+        <div className="text-danger text-center py-5">
+          {error}
+        </div>
+      )}
 
-                                                <p className={styles.date}>
-                                                    {new Date(item.date).toLocaleDateString()}
-                                                </p>
+      {!loading && !error && (
+        <div className="container py-4">
+          <h1 className={styles.title}>Video Games News</h1>
 
-                                                {item.url && (
-                                                    <a
-                                                        href={item.url}
-                                                        className="btn btn-primary mt-auto"
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        Read More
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="text-center py-5">
-                                <h5 className="text-muted">No news available</h5>
-                            </div>
-                        )}
+          {news.length > 0 ? (
+            <div className="row g-4">
+              {news.map((item, index) => (
+                <div key={index} className="col-md-4">
+                  <div className={`card ${styles.card}`}>
+                    <div className={styles.imageWrapper}>
+                      <img src={item.image} alt={item.title} />
                     </div>
 
-                    <Footer />
+                    <div className="card-body d-flex flex-column">
+                      <h5 className={`card-title ${styles.titleText}`}>
+                        {item.title}
+                      </h5>
+
+                      <p className={`card-text ${styles.summary}`}>
+                        {item.summary}
+                      </p>
+
+                      <p className={styles.date}>
+                        {new Date(item.date).toLocaleDateString()}
+                      </p>
+
+                      {item.url && (
+                        <a
+                          href={item.url}
+                          className="btn btn-primary mt-auto"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Read More
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
-            )}
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-5">
+              <h5 className="text-muted">No news available</h5>
+            </div>
+          )}
         </div>
-    );
+      )}
+    </div>
+
+    <Footer />
+  </div>
+);
 };
