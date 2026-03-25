@@ -92,8 +92,8 @@ export const Login = () => {
 
     Object.keys(updatedControls).forEach(
       (name) =>
-        (formIsValid =
-          updatedControls[name as keyof FormControls].valid && formIsValid)
+      (formIsValid =
+        updatedControls[name as keyof FormControls].valid && formIsValid)
     );
 
     setFormControls(updatedControls);
@@ -166,6 +166,12 @@ export const Login = () => {
                     />
                   );
                 })}
+
+                <div style={{ textAlign: "right" }}>
+                  <button type="button" className="btn btn-secondary" onClick={() => navigate("/forgot-password")}>
+                    Forgot password?
+                  </button>
+                </div>
 
                 {error && (
                   <div className="alert alert-danger mt-3">{error}</div>

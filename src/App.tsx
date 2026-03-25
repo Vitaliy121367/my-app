@@ -16,6 +16,8 @@ import { ModerPanel } from './pages/ModerPanel/ModerPanel';
 import { AdminPanel } from './pages/AdminPanel/AdminPanel';
 import { Verify } from './pages/Verify/Verify';
 import { VerifyEditEmail } from './pages/VerifyEditEmail/VerifyEditEmail';
+import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
           <Route path="/addrecord/:id" element={<AddRecord />} />
           <Route path="/verify/:token" element={<Verify />} />
           <Route path="/verify-edit/:token" element={<VerifyEditEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
