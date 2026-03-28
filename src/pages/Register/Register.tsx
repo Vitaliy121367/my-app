@@ -35,6 +35,8 @@ export const Register = () => {
 
   const [isFormValid, setIsFormValid] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [passwordValidation, setPasswordValidation] = useState({
     minLength: false,
@@ -107,18 +109,18 @@ export const Register = () => {
   };
 
   const checkPasswordLeak = async (password: string) => {
-  const hash = sha1(password).toUpperCase();
-  const prefix = hash.slice(0, 5);
-  const suffix = hash.slice(5);
+    const hash = sha1(password).toUpperCase();
+    const prefix = hash.slice(0, 5);
+    const suffix = hash.slice(5);
 
-  const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
-  const text = await res.text();
+    const res = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+    const text = await res.text();
 
-  const found = text.split("\n").some(line => line.startsWith(suffix));
+    const found = text.split("\n").some(line => line.startsWith(suffix));
 
-  return found; 
-};
-  
+    return found;
+  };
+
   const getPasswordStrength = (password: string) => {
     let score = 0;
 
@@ -166,28 +168,33 @@ export const Register = () => {
   };
 
   const submitHandler = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
 
-  const leaked = await checkPasswordLeak(formControls.password.value);
+    try {
+      const leaked = await checkPasswordLeak(formControls.password.value);
 
-  if (leaked) {
-    setError("This password has appeared in data breaches. Choose another.");
-    return;
-  }
+      if (leaked) {
+        setError("This password has appeared in data breaches. Choose another.");
+        setLoading(false);
+        return;
+      }
 
-  try {
-    await axios.post("http://localhost:4000/api/auth/register", {
-      name: formControls.name.value,
-      email: formControls.email.value,
-      password: formControls.password.value,
-    });
+      await axios.post("http://localhost:4000/api/auth/register", {
+        name: formControls.name.value,
+        email: formControls.email.value,
+        password: formControls.password.value,
+      });
 
-    navigate("/");
-  } catch (err: any) {
-    setError(err.response?.data?.message || "Registration error");
-  }
-};
+      setSuccess("Please confirm your email. Check your inbox 📩");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Registration error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.page}>
@@ -200,96 +207,103 @@ export const Register = () => {
           <div className={`row ${styles.registerContainer}`}>
             <div className="col-sm-10 col-md-6 col-lg-5 mx-auto">
 
-              <form onSubmit={submitHandler}>
+              {success ? (
+                <div className="alert alert-success text-center">
+                  {success}
+                </div>
+              ) : (
+                <form onSubmit={submitHandler}>
 
-                <Input
-                  type="text"
-                  label="Name"
-                  value={formControls.name.value}
-                  valid={formControls.name.valid}
-                  touched={formControls.name.touched}
-                  errorMessage={formControls.name.errorMessage}
-                  shouldValidate={true}
-                  onChange={(e: any) => onChangeHandler(e, "name")}
-                />
+                  <Input
+                    type="text"
+                    label="Name"
+                    value={formControls.name.value}
+                    valid={formControls.name.valid}
+                    touched={formControls.name.touched}
+                    errorMessage={formControls.name.errorMessage}
+                    shouldValidate={true}
+                    onChange={(e: any) => onChangeHandler(e, "name")}
+                  />
 
-                <Input
-                  type="email"
-                  label="Email"
-                  value={formControls.email.value}
-                  valid={formControls.email.valid}
-                  touched={formControls.email.touched}
-                  errorMessage={formControls.email.errorMessage}
-                  shouldValidate={true}
-                  onChange={(e: any) => onChangeHandler(e, "email")}
-                />
+                  <Input
+                    type="email"
+                    label="Email"
+                    value={formControls.email.value}
+                    valid={formControls.email.valid}
+                    touched={formControls.email.touched}
+                    errorMessage={formControls.email.errorMessage}
+                    shouldValidate={true}
+                    onChange={(e: any) => onChangeHandler(e, "email")}
+                  />
 
-                <Input
-                  type="password"
-                  label="Password"
-                  value={formControls.password.value}
-                  valid={formControls.password.valid}
-                  touched={formControls.password.touched}
-                  errorMessage={formControls.password.errorMessage}
-                  shouldValidate={true}
-                  onChange={(e: any) => onChangeHandler(e, "password")}
-                  autoComplete="new-password"
-                  spellCheck={false}
-                />
+                  <Input
+                    type="password"
+                    label="Password"
+                    value={formControls.password.value}
+                    valid={formControls.password.valid}
+                    touched={formControls.password.touched}
+                    errorMessage={formControls.password.errorMessage}
+                    shouldValidate={true}
+                    onChange={(e: any) => onChangeHandler(e, "password")}
+                    autoComplete="new-password"
+                    spellCheck={false}
+                  />
 
-                {formControls.password.touched && (
-                  <>
-                    <div
-                      style={{
-                        height: "8px",
-                        background: "#eee",
-                        borderRadius: "5px",
-                        overflow: "hidden",
-                        marginTop: "8px",
-                      }}
-                    >
+                  {formControls.password.touched && (
+                    <>
                       <div
                         style={{
-                          height: "100%",
-                          width: passwordStrength.width,
-                          background: passwordStrength.color,
-                          transition: "0.3s",
+                          height: "8px",
+                          background: "#eee",
+                          borderRadius: "5px",
+                          overflow: "hidden",
+                          marginTop: "8px",
                         }}
-                      />
-                    </div>
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            width: passwordStrength.width,
+                            background: passwordStrength.color,
+                            transition: "0.3s",
+                          }}
+                        />
+                      </div>
 
-                    <small style={{ color: passwordStrength.color }}>
-                      Password strength: {passwordStrength.label}
-                    </small>
-                  </>
-                )}
+                      <small style={{ color: passwordStrength.color }}>
+                        Password strength: {passwordStrength.label}
+                      </small>
+                    </>
+                  )}
 
-                {formControls.password.touched && (
-                  <ul className="mt-2" style={{ listStyle: "none", padding: 0 }}>
-                    <li style={{ color: passwordValidation.minLength ? "green" : "red" }}>
-                      {passwordValidation.minLength ? "✔" : "✖"} Minimum 8 characters
-                    </li>
+                  {formControls.password.touched && (
+                    <ul className="mt-2" style={{ listStyle: "none", padding: 0 }}>
+                      <li style={{ color: passwordValidation.minLength ? "green" : "red" }}>
+                        {passwordValidation.minLength ? "✔" : "✖"} Minimum 8 characters
+                      </li>
 
-                    <li style={{ color: passwordValidation.hasUppercase ? "green" : "red" }}>
-                      {passwordValidation.hasUppercase ? "✔" : "✖"} At least one uppercase letter
-                    </li>
+                      <li style={{ color: passwordValidation.hasUppercase ? "green" : "red" }}>
+                        {passwordValidation.hasUppercase ? "✔" : "✖"} At least one uppercase letter
+                      </li>
 
-                    <li style={{ color: passwordValidation.hasLowercase ? "green" : "red" }}>
-                      {passwordValidation.hasLowercase ? "✔" : "✖"} At least one lowercase letter
-                    </li>
-                  </ul>
-                )}
+                      <li style={{ color: passwordValidation.hasLowercase ? "green" : "red" }}>
+                        {passwordValidation.hasLowercase ? "✔" : "✖"} At least one lowercase letter
+                      </li>
+                    </ul>
+                  )}
 
-                {error && <div className="alert alert-danger mt-3">{error}</div>}
+                  {error && <div className="alert alert-danger mt-3">{error}</div>}
 
-                <Button
-                  type="submit"
-                  disabled={!isFormValid || passwordStrength.label === "Weak"}
-                >
-                  Register
-                </Button>
+                  <Button
+                    type="submit"
+                    disabled={!isFormValid || passwordStrength.label === "Weak" || loading}
+                  >
+                    {loading ? "Loading..." : "Register"}
+                  </Button>
 
-              </form>
+                </form>
+              )}
+
             </div>
           </div>
         </div>

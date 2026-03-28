@@ -102,7 +102,7 @@ export const AddGame = () => {
                     </div>
 
                     <div className="mb-3">
-                        <label className={`form-label ${styles.title}`}>Link</label>
+                        <label className={`form-label ${styles.title}`}>Icon Link</label>
 
                         <input
                             type="url"

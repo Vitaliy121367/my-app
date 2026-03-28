@@ -95,7 +95,7 @@ export const ModerPanelRecord = () => {
                                 All
                             </button>
                             <button
-                                className={`btn ${filterStatus === "pending" ? "btn-warning" : "btn-outline-warning"}`}
+                                className={`btn ${filterStatus === "pending" ? "btn-primary" : "btn-outline-primary"}`}
                                 onClick={() => { setFilterStatus("pending"); setPage(1); }}
                             >
                                 Pending
@@ -107,10 +107,10 @@ export const ModerPanelRecord = () => {
                                 Approved
                             </button>
                             <button
-                                className={`btn ${filterStatus === "rejected" ? "btn-danger" : "btn-outline-danger"}`}
+                                className={`btn ${filterStatus === "rejected" ? "btn-warning" : "btn-outline-warning"}`}
                                 onClick={() => { setFilterStatus("rejected"); setPage(1); }}
                             >
-                                rejected
+                                Rejected
                             </button>
                         </div>
 

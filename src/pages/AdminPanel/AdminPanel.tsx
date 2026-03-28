@@ -7,6 +7,7 @@ import { ModerPanelRecord } from "../ModerPanelRecord/ModerPanelRecord";
 import { useNavigate } from "react-router";
 import { AdminPanelUser } from "../AdminPanelUser/AdminPanelUser";
 import { AddGame } from "../AddGame/AddGame";
+import { AdminPanelEditGames } from "../AdminPanelEditGames/AdminPanelEditGames";
 
 export const AdminPanel = () => {
     const currentUser = localStorage.getItem("user")
@@ -123,6 +124,30 @@ export const AdminPanel = () => {
                         >
                             <div className={`accordion-body   `}>
                                 <AddGame />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="accordion-item">
+                        <h2 className="accordion-header">
+                            <button
+                                className={`accordion-button ${styles.title}`}
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseFive"
+                                aria-expanded="false"
+                                aria-controls="collapseFive"
+                            >
+                                EditGames
+                            </button>
+                        </h2>
+                        <div
+                            id="collapseFive"
+                            className="accordion-collapse collapse"
+                            data-bs-parent="#moderAccordion"
+                        >
+                            <div className={`accordion-body   `}>
+                                <AdminPanelEditGames />
                             </div>
                         </div>
                     </div>

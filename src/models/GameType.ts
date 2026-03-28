@@ -2,5 +2,6 @@ type GameType = {
   _id: string;
   name: string;
   year: number;
-  platform: string;
+  icon?: string;
+  platform: string[];
 };
