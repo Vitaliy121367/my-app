@@ -3,6 +3,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "../../components/styles.module.css";
 import style from "./Profile.module.css";
 import Loader from "../../components/Loader/Loader";
 
@@ -69,7 +70,7 @@ export const Profile = () => {
 
   return (
     <div
-      className={style.page}
+      className={styles.page}
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
@@ -79,13 +80,13 @@ export const Profile = () => {
     >
       <Navbar />
 
-      <div className={style.content}>
+      <div className={styles.content}>
         {loading && <Loader />}
         {!loading && error && <div className="text-danger text-center py-5">{error}</div>}
 
         {!loading && !error && user && (
           <div className={style.innerContent}>
-            <h2 className={style.title}>Profile</h2>
+            <h2 className={styles.title}>Profile</h2>
 
             <div className="container py-4">
               <div className="profile-header p-4 mb-4 d-flex align-items-center justify-content-between">

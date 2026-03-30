@@ -2,7 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import { useState, useEffect } from "react";
-import styles from "./AddRecord.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./AddRecord.module.css";
 import axios from "axios";
 
 type Platform = "PC" | "Console" | "Phone";

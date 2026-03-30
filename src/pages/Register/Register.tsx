@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
-import styles from "./Register.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./Register.module.css";
 import axios from "axios";
 import { useState } from "react";
 import Input from "../../UI/Input/Input";
@@ -204,7 +205,7 @@ export const Register = () => {
         <h2 className={styles.title}>Register</h2>
 
         <div className="container py-4">
-          <div className={`row ${styles.registerContainer}`}>
+          <div className={`row`}>
             <div className="col-sm-10 col-md-6 col-lg-5 mx-auto">
 
               {success ? (

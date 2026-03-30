@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader/Loader";
-import styles from "./AdminPanelEditGames.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./AdminPanelEditGames.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
@@ -102,7 +103,7 @@ export const AdminPanelEditGames = () => {
     };
 
     return (
-        <div className={styles.page}>
+        <div className={style.page}>
             {loading && <Loader />}
 
             {!loading && error && (
@@ -110,7 +111,7 @@ export const AdminPanelEditGames = () => {
             )}
 
             {!loading && !error && (
-                <div className={`${styles.page} ${styles.content} container py-4`}>
+                <div className={`${style.page} ${styles.content} container py-4`}>
                     <h1 className={styles.title}>Edit Games</h1>
 
                     {games.length === 0 ? (

@@ -1,6 +1,7 @@
 import { useEffect, useState, Fragment } from "react";
 import Loader from "../../components/Loader/Loader";
-import styles from "./ModerPanelRecord.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./ModerPanelRecord.module.css";
 import axios from "axios";
 
 const LIMIT = 10;
@@ -78,7 +79,7 @@ export const ModerPanelRecord = () => {
 
     return (
         <div
-            className={styles.page_container}
+            className={style.page}
         >
             <main className={styles.content}>
                 {loading && <Loader />}

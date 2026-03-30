@@ -4,7 +4,8 @@ import { NavLink } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
-import styles from "./Games.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./Games.module.css";
 
 const LIMIT = 20;
 
@@ -104,7 +105,7 @@ export const Games = () => {
                       <div className="card h-100">
                         <img
                           src={game.icon}
-                          className={`card-img-top ${styles.icon}`}
+                          className={`card-img-top ${style.icon}`}
                           alt={game.name}
                         />
                         <div className="card-body">

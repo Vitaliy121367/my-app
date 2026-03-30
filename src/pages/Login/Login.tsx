@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
-import styles from "./Login.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./Login.module.css";
 import axios from "axios";
 import { useState } from "react";
 import Input from "../../UI/Input/Input";
@@ -138,7 +139,7 @@ export const Login = () => {
         <h2 className={styles.title}>Login</h2>
 
         <div className="container py-4">
-          <div className={`row ${styles.loginContainer}`}>
+          <div className={`row ${style.loginContainer}`}>
             <div className="col-sm-10 col-md-6 col-lg-5 mx-auto">
               <form onSubmit={submitHandler}>
                 {Object.keys(formControls).map((controlName) => {

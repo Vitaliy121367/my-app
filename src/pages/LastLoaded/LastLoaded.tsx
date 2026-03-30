@@ -2,6 +2,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
 import { useEffect, useState } from "react";
+import styles from "../../components/styles.module.css";
 import style from "./LastLoaded.module.css";
 import axios from "axios";
 
@@ -54,7 +55,7 @@ export const LastLoaded = () => {
 
     return (
         <div
-            className={style.page}
+            className={styles.page}
             style={{
                 backgroundImage: `url(${bg})`,
                 backgroundSize: "cover",
@@ -65,7 +66,7 @@ export const LastLoaded = () => {
         >
             <Navbar />
 
-            <main className={style.content}>
+            <main className={styles.content}>
                 {loading && <Loader />}
 
                 {!loading && error && (
@@ -75,14 +76,14 @@ export const LastLoaded = () => {
                 )}
 
                 {!loading && !error && lastLoaded.length === 0 && (
-                    <div className={`${style.title} text-center py-5`}>
+                    <div className={`${styles.title} text-center py-5`}>
                         No approved records found.
                     </div>
                 )}
 
                 {!loading && !error && lastLoaded.length > 0 && (
                     <div className="p-4 mb-4">
-                        <h6 className={`${style.title} mb-4`}>Last Loaded</h6>
+                        <h2 className={`${styles.title} mb-4`}>Last Loaded</h2>
 
                         <div className={style.runsGrid}>
                             {lastLoaded.map((record: any) => (

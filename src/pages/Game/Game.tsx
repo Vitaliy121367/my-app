@@ -4,7 +4,8 @@ import { Footer } from "../../components/Footer/Footer";
 import { useEffect, useRef, useState } from "react";
 import Loader from "../../components/Loader/Loader";
 import axios from "axios";
-import styles from "./Game.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./Game.module.css";
 
 export const Game = () => {
     const [game, setGame] = useState<any>(null);
@@ -121,14 +122,14 @@ export const Game = () => {
 
                 {!loading && !error && game && (
                     <div className="container py-4">
-                        <h1 className={`card-title ${styles.gameTitle}`}>
+                        <h1 className={`card-title ${styles.title}`}>
                             {game.name}
                         </h1>
 
                         <div className="card mb-4">
                             <img
                                 src={game.icon}
-                                className={`card-img-top ${styles.gameImage}`}
+                                className={`card-img-top ${style.gameImage}`}
                                 alt={game.name}
                             />
 
@@ -175,7 +176,7 @@ export const Game = () => {
 
                         <div className="table-responsive">
                             <table
-                                className={`table table-hover ${styles.tableCustom}`}
+                                className={`table table-hover ${style.tableCustom}`}
                             >
                                 <thead>
                                     <tr>

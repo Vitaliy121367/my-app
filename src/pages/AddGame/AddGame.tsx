@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import styles from "./AddGame.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./AddGame.module.css";
 import axios from "axios";
 
 export const AddGame = () => {

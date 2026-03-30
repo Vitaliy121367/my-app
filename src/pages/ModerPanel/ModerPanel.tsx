@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Footer } from "../../components/Footer/Footer";
 import { Navbar } from "../../components/Navbar/Navbar";
-import styles from "./ModerPanel.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./ModerPanel.module.css";
 import { ModerPanelReport } from "../ModerPanelReport/ModerPanelReport";
 import { ModerPanelRecord } from "../ModerPanelRecord/ModerPanelRecord";
 import { useNavigate } from "react-router";
@@ -18,7 +19,7 @@ export const ModerPanel = () => {
     }, [currentUser, navigate]);
     return (
         <div
-            className={styles.page_container}
+            className={styles.page}
             style={{
                 backgroundImage: `url(${bg})`,
                 backgroundSize: "cover",
@@ -32,7 +33,7 @@ export const ModerPanel = () => {
                     <div className="accordion-item">
                         <h2 className="accordion-header">
                             <button
-                                className={`accordion-button ${styles.title}`}
+                                className={`accordion-button ${style.title}`}
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseOne"
@@ -56,7 +57,7 @@ export const ModerPanel = () => {
                     <div className="accordion-item">
                         <h2 className="accordion-header">
                             <button
-                                className={`accordion-button ${styles.title}`}
+                                className={`accordion-button ${style.title}`}
                                 type="button"
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo"

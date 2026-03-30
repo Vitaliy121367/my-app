@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import styles from "../../components/styles.module.css";
 import style from "./Verify.module.css";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
@@ -29,11 +30,11 @@ export const Verify = () => {
   }, [token]);
 
   return (
-  <div className={style.page}>
+  <div className={styles.page}>
     <Navbar />
 
-    <div className={style.content}>
-      <h2 className={style.title}>
+    <div className={styles.content}>
+      <h2 className={styles.title}>
       {
         status === "loading" && (
           "Verifying..."

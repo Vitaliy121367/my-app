@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import { useEffect, useState } from "react";
-import styles from "./Settings.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./Settings.module.css";
 import Button from "../../UI/Button/Button";
 import axios from "axios";
 import Input from "../../UI/Input/Input";
@@ -304,15 +305,15 @@ export const Settings = () => {
             <Button type="submit" disabled={!isFormValid || passwordStrength.label === "Weak"}>Edit</Button>
           </form>
 
-          <div className={`${styles.accordion} accordion accordion-flush mt-5`} id="accordionFlushExample">
-            <div className={`accordion-item ${styles.accordionItem}`}>
+          <div className={`${style.accordion} accordion accordion-flush mt-5`} id="accordionFlushExample">
+            <div className={`accordion-item ${style.accordionItem}`}>
               <h2 className="accordion-header">
-                <button className={`accordion-button collapsed ${styles.accordionHeader}`} type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne">
+                <button className={`accordion-button collapsed ${style.accordionHeader}`} type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne">
                   Delete Account
                 </button>
               </h2>
               <div id="flush-collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                <div className={styles.accordionBody}>
+                <div className={style.accordionBody}>
                   <form onSubmit={deleteAccountHandler}>
                     <Input type="password" label="Password" value={formControls.passwordDelete.value} valid={formControls.passwordDelete.valid} touched={formControls.passwordDelete.touched} errorMessage={formControls.passwordDelete.errorMessage} shouldValidate={true} onChange={(e: any) => onChangeHandler(e, "passwordDelete")} />
                     <Input type="password" label="Confirm" value={formControls.passwordDeleteConfirmation.value} valid={formControls.passwordDeleteConfirmation.valid} touched={formControls.passwordDeleteConfirmation.touched} errorMessage={formControls.passwordDeleteConfirmation.errorMessage} shouldValidate={true} onChange={(e: any) => onChangeHandler(e, "passwordDeleteConfirmation")} />

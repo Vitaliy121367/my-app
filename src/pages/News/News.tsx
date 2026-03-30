@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
-import styles from "./News.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./News.module.css";
 import axios from "axios";
 
 interface NewsItem {
@@ -76,21 +77,21 @@ export const News = () => {
             <div className="row g-4">
               {news.map((item, index) => (
                 <div key={index} className="col-md-4">
-                  <div className={`card ${styles.card}`}>
-                    <div className={styles.imageWrapper}>
+                  <div className={`card ${style.card}`}>
+                    <div className={style.imageWrapper}>
                       <img src={item.image} alt={item.title} />
                     </div>
 
                     <div className="card-body d-flex flex-column">
-                      <h5 className={`card-title ${styles.titleText}`}>
+                      <h5 className={`card-title ${style.titleText}`}>
                         {item.title}
                       </h5>
 
-                      <p className={`card-text ${styles.summary}`}>
+                      <p className={`card-text ${style.summary}`}>
                         {item.summary}
                       </p>
 
-                      <p className={styles.date}>
+                      <p className={style.date}>
                         {new Date(item.date).toLocaleDateString()}
                       </p>
 

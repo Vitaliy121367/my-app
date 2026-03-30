@@ -5,7 +5,8 @@ import { sha1 } from "js-sha1";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import Input from "../../UI/Input/Input";
-import styles from "./ResetPassword.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./ResetPassword.module.css";
 
 export const ResetPassword = () => {
   const { token } = useParams();

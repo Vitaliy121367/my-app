@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "../../components/Loader/Loader";
-import styles from "./AdminPanelUser.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./AdminPanelUser.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
@@ -72,7 +73,7 @@ export const AdminPanelUser = () => {
     }, [currentUser, navigate]);
 
     return (
-        <div className={styles.page}>
+        <div className={style.page}>
             {loading && <Loader />}
 
             {!loading && error && (
@@ -80,7 +81,7 @@ export const AdminPanelUser = () => {
             )}
 
             {!loading && !error && (
-                <div className={`${styles.page} ${styles.content} container py-4`}>
+                <div className={`${style.page} ${styles.content} container py-4`}>
                     <h1 className={styles.title}>Admin Panel</h1>
 
                     <table className="table table-dark table-striped">

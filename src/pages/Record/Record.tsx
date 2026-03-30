@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 import { useEffect, useState } from "react";
-import styles from "./Record.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./Record.module.css";
 import axios from "axios";
 import Loader from "../../components/Loader/Loader";
 
@@ -191,7 +192,7 @@ export const Record = () => {
             className="mb-2"
             style={{ marginLeft: level ? 40 : 0 }}
           >
-            <div className={`card ${styles.body}`}>
+            <div className={`card ${style.body}`}>
               <div className="card-body d-flex align-items-start gap-2">
                 <img
                   src={
@@ -258,7 +259,7 @@ export const Record = () => {
           </div>
         </div>
 
-        <div className={`card ${styles.body}`}>
+        <div className={`card ${style.body}`}>
           <div>Platform: {record.platform}</div>
           <div>Time: {record.time}</div>
           <div>Version: {record.version}</div>
@@ -268,7 +269,7 @@ export const Record = () => {
 
           <iframe
             loading="lazy"
-            className={styles.video}
+            className={style.video}
             src={getEmbedUrl(record.urlVideo)}
             title="YouTube video player"
             allowFullScreen
@@ -301,7 +302,7 @@ export const Record = () => {
 
             {mode === "comment" && (
               <div
-                className={`${styles.title} d-flex align-items-center`}
+                className={`${style.ratingTitle} d-flex align-items-center`}
                 style={{ gap: "5px" }}
               >
                 Rating:

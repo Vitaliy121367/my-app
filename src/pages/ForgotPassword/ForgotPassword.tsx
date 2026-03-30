@@ -2,7 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "../../components/Navbar/Navbar";
-import styles from "./ForgotPassword.module.css";
+import styles from "../../components/styles.module.css";
+import style from "./ForgotPassword.module.css";
 import { Footer } from "../../components/Footer/Footer";
 import Input from "../../UI/Input/Input";
 
