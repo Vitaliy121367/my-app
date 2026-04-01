@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useRef } from "react";
 import Loader from "../../components/Loader/Loader";
 import styles from "../../components/styles.module.css";
 import style from "./ModerPanelReport.module.css";
@@ -14,36 +14,33 @@ export const ModerPanelReport = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [filterType, setFilterType] = useState<"all" | "checked" | "report">("all");
   const [openReportId, setOpenReportId] = useState<string | null>(null);
+  const [heights, setHeights] = useState<{ [key: string]: number }>({});
 
   const currentUser = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user") || "{}")
     : null;
   const token = localStorage.getItem("token");
+  const currentUserId = currentUser?._id;
 
-  useEffect(() => {
+  const fetchReports = () => {
     setLoading(true);
     setError(null);
 
+    const params: any = { page, limit: LIMIT, currentUserId };
+    if (filterType !== "all") params.type = filterType;
+
     axios
-      .get("http://localhost:4000/api/comments/reports", {
-        params: {
-          page,
-          type: filterType !== "all" ? filterType : undefined,
-          currentUserId: currentUser?._id, 
-        },
-      })
+      .get("http://localhost:4000/api/comments/reports", { params })
       .then((res) => {
         setReports(res.data.data || []);
         setTotalPages(res.data.pagination.pages || 1);
-
-        res.data.rejectedReports?.forEach((r: any) => {
-          axios.delete(`http://localhost:4000/api/comments/${r._id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }).catch(err => console.error(err));
-        });
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchReports();
   }, [page, filterType]);
 
   const getEmbedUrl = (url: string) => {
@@ -52,41 +49,58 @@ export const ModerPanelReport = () => {
   };
 
   const checkReport = (id: string) => {
-    axios.patch(
-      `http://localhost:4000/api/comments/${id}`,
-      { type: "checked" },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then(() => setReports(prev => prev.map(r => r._id === id ? { ...r, type: "checked" } : r)))
-    .catch(err => console.error(err));
+    axios
+      .patch(
+        `http://localhost:4000/api/comments/${id}`,
+        { type: "checked" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(() => fetchReports())
+      .catch((err) => console.error(err));
   };
 
   const removeRecord = (recordId: string, commentId: string) => {
-    axios.delete(`http://localhost:4000/api/records/${recordId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }).catch(err => console.error(err));
+    axios
+      .delete(`http://localhost:4000/api/records/${recordId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .catch((err) => console.error(err));
 
-    axios.patch(
-      `http://localhost:4000/api/comments/${commentId}`,
-      { type: "checked" },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then(() => setReports(prev => prev.map(r => r._id === commentId ? { ...r, type: "checked" } : r)))
-    .catch(err => console.error(err));
+    axios
+      .patch(
+        `http://localhost:4000/api/comments/${commentId}`,
+        { type: "checked" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(() => fetchReports())
+      .catch((err) => console.error(err));
   };
 
   const blockUser = (userId: string, recordId: string, commentId: string) => {
-    axios.patch(`http://localhost:4000/api/auth/update/?id=${userId}`, { role: "blocked" }, {
-      headers: { Authorization: `Bearer ${token}` },
-    }).catch(err => console.error(err));
+    axios
+      .patch(
+        `http://localhost:4000/api/auth/update/?id=${userId}`,
+        { role: "blocked" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .catch((err) => console.error(err));
 
     removeRecord(recordId, commentId);
   };
 
+  const contentRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  useEffect(() => {
+    const newHeights: { [key: string]: number } = {};
+    reports.forEach((r) => {
+      const el = contentRefs.current[r._id];
+      if (el) newHeights[r._id] = el.scrollHeight;
+    });
+    setHeights(newHeights);
+  }, [reports]);
+
   return (
-    <div
-      className={style.page}
-    >
+    <div className={style.page}>
       <main className={styles.content}>
         {loading && <Loader />}
         {!loading && error && <div className="text-danger text-center py-5">{error}</div>}
@@ -138,26 +152,31 @@ export const ModerPanelReport = () => {
                         <td>{report.gameId?.name}</td>
                         <td>{report.fromUserId?.name}</td>
                         <td>{report.toUserId?.name}</td>
-                        <td style={{ cursor: "pointer", color: "#0d6efd" }}>{report.toRecordId?._id}</td>
+                        <td style={{ color: "#0d6efd" }}>{report.toRecordId?._id || "—"}</td>
                         <td>{new Date(report.dateUpload).toLocaleDateString()}</td>
                         <td>{report.type}</td>
                       </tr>
 
-                      {openReportId === report._id && report.toRecordId && (
-                        <tr>
-                          <td colSpan={7} className="bg-secondary">
-                            <div className="p-3">
+                      <tr>
+                        <td colSpan={7} className="p-0">
+                          <div
+                            className={style.expandable}
+                            style={{
+                              maxHeight: openReportId === report._id ? heights[report._id] || 0 : 0,
+                            }}
+                          >
+                            <div ref={(el: any) => (contentRefs.current[report._id] = el)} className="p-3 bg-secondary">
                               <h5>Record Information</h5>
                               <p><b>Game:</b> {report.gameId?.name}</p>
-                              <p><b>Status:</b> {report.toRecordId?.status}</p>
+                              <p><b>Status:</b> {report.toRecordId?.status || "—"}</p>
                               <p><b>User:</b> {report.fromUserId?.name}</p>
-                              <p><b>Platform:</b> {report.toRecordId?.platform}</p>
-                              <p><b>Time:</b> {report.toRecordId?.time}</p>
-                              <p><b>Version:</b> {report.toRecordId?.version}</p>
+                              <p><b>Platform:</b> {report.toRecordId?.platform || "—"}</p>
+                              <p><b>Time:</b> {report.toRecordId?.time || "—"}</p>
+                              <p><b>Version:</b> {report.toRecordId?.version || "—"}</p>
                               <p style={{ wordBreak: "break-word" }}><b>Text:</b> {report.text}</p>
 
-                              {report.toRecordId.urlVideo && (
-                                <div className="ratio ratio-16x9">
+                              {report.toRecordId?.urlVideo && (
+                                <div className="ratio ratio-16x9 mb-3">
                                   <iframe src={getEmbedUrl(report.toRecordId.urlVideo)} allowFullScreen title="video" />
                                 </div>
                               )}
@@ -166,15 +185,17 @@ export const ModerPanelReport = () => {
                                 {report.type !== "checked" && (
                                   <button className="btn btn-success" onClick={() => checkReport(report._id)}>Check</button>
                                 )}
-                                {report.type !== "checked" && (
+                                {report.toRecordId && report.type !== "checked" && (
                                   <button className="btn btn-warning" onClick={() => removeRecord(report.toRecordId._id, report._id)}>Remove Record</button>
                                 )}
-                                <button className="btn btn-danger" onClick={() => blockUser(report.toUserId._id, report.toRecordId._id, report._id)}>Block User</button>
+                                {report.toRecordId && (
+                                  <button className="btn btn-danger" onClick={() => blockUser(report.toUserId._id, report.toRecordId._id, report._id)}>Block User</button>
+                                )}
                               </div>
                             </div>
-                          </td>
-                        </tr>
-                      )}
+                          </div>
+                        </td>
+                      </tr>
                     </Fragment>
                   ))}
                 </tbody>

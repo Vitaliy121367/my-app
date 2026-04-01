@@ -7,13 +7,12 @@ import Loader from "../../components/Loader/Loader";
 import styles from "../../components/styles.module.css";
 import style from "./Games.module.css";
 
-const LIMIT = 20;
-
 export const Games = () => {
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(1);
 
   const [inputValue, setInputValue] = useState("");
   const [search, setSearch] = useState("");
@@ -31,27 +30,38 @@ export const Games = () => {
     setError(null);
 
     axios
-      .get("http://localhost:4000/api/games")
+      .get("http://localhost:4000/api/games/games", {
+        params: { page, search },
+      })
       .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : res.data.games || [];
-        const filtered = data.filter((game: any) =>
-          game.name.toLowerCase().includes(search.toLowerCase())
-        );
-
-        setGames(filtered);
-        setPage(1);
+        setGames(res.data.games || []);
+        setPages(res.data.pages || 1);
+        if (res.data.page !== page) {
+          setPage(res.data.page);
+        }
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [search]);
+  }, [page, search]);
 
-  const pages = Math.ceil(games.length / LIMIT);
-  const paginatedGames = games.slice((page - 1) * LIMIT, page * LIMIT);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setSearch(inputValue);
+  const handleSearch = () => {
+    if (page !== 1) {
+      setPage(1);
     }
+    setSearch(inputValue);
+  };
+
+  const getPages = () => {
+    const range = 2;
+    const start = Math.max(1, page - range);
+    const end = Math.min(pages, page + range);
+    const result = [];
+
+    for (let i = start; i <= end; i++) {
+      result.push(i);
+    }
+
+    return result;
   };
 
   return (
@@ -83,20 +93,19 @@ export const Games = () => {
                 placeholder="Search game..."
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch();
+                }}
                 autoFocus
               />
-              <button
-                className="btn btn-warning"
-                onClick={() => setSearch(inputValue)}
-              >
+              <button className="btn btn-warning" onClick={handleSearch}>
                 Search
               </button>
             </div>
 
             <div className="row g-4">
-              {paginatedGames.length > 0 ? (
-                paginatedGames.map((game) => (
+              {games.length > 0 ? (
+                games.map((game) => (
                   <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
                     <NavLink
                       to={`/games/${game._id}`}
@@ -113,7 +122,10 @@ export const Games = () => {
                           <p className="card-text">Year: {game.year}</p>
                           <div>
                             {game.platform.map((p: string) => (
-                              <span key={p} className="badge bg-secondary me-1">
+                              <span
+                                key={p}
+                                className="badge bg-secondary me-1"
+                              >
                                 {p}
                               </span>
                             ))}
@@ -132,18 +144,19 @@ export const Games = () => {
 
             {pages > 1 && (
               <div className="d-flex justify-content-center align-items-center mt-5 gap-2 flex-wrap">
-                {Array.from({ length: pages }, (_, index) => index + 1).map(
-                  (pageNumber) => (
-                    <button
-                      key={pageNumber}
-                      className={`btn ${page === pageNumber ? "btn-warning" : "btn-outline-warning"
-                        }`}
-                      onClick={() => setPage(pageNumber)}
-                    >
-                      {pageNumber}
-                    </button>
-                  )
-                )}
+                {getPages().map((pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    className={`btn ${
+                      page === pageNumber
+                        ? "btn-warning"
+                        : "btn-outline-warning"
+                    }`}
+                    onClick={() => setPage(pageNumber)}
+                  >
+                    {pageNumber}
+                  </button>
+                ))}
               </div>
             )}
           </div>

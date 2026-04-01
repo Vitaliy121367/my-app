@@ -18,19 +18,9 @@ export const LastLoaded = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await axios.get("http://localhost:4000/api/records");
+                const { data } = await axios.get("http://localhost:4000/api/records/last-loaded");
 
-                const recordsArray = data.records || [];
-
-                const latestFiveApproved = recordsArray
-                    .filter((record: any) => record.status === "approved")
-                    .sort(
-                        (a: any, b: any) =>
-                            new Date(b.dateUpload).getTime() -
-                            new Date(a.dateUpload).getTime()
-                    )
-                    .slice(0, 5);
-
+                const latestFiveApproved = data.records || [];
 
                 setLastLoaded(latestFiveApproved);
             } catch (err: any) {

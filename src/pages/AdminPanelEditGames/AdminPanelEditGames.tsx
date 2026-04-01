@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 
 const availablePlatforms = ["Phone", "PC", "Console"];
+const LIMIT = 20;
 
 export const AdminPanelEditGames = () => {
     const [games, setGames] = useState<GameType[]>([]);
@@ -14,6 +15,9 @@ export const AdminPanelEditGames = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [inputValue, setInputValue] = useState("");
+    const [search, setSearch] = useState("");
+
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
@@ -21,16 +25,14 @@ export const AdminPanelEditGames = () => {
         ? JSON.parse(localStorage.getItem("user") || "{}")
         : null;
 
-    const fetchGames = async (pageNumber: number) => {
+    const fetchGames = async (pageNumber: number, searchValue: string) => {
         setLoading(true);
         setError(null);
 
         try {
-            const res = await axios.get("http://localhost:4000/api/games", {
-                params: { page: pageNumber },
+            const res = await axios.get("http://localhost:4000/api/games/games", {
+                params: { page: pageNumber, search: searchValue },
             });
-
-            console.log("API:", res.data);
 
             if (Array.isArray(res.data)) {
                 setGames(res.data);
@@ -38,9 +40,12 @@ export const AdminPanelEditGames = () => {
             } else {
                 setGames(res.data.games || []);
                 setPages(res.data.pages || 1);
+
+                if (res.data.page !== pageNumber) {
+                    setPage(res.data.page);
+                }
             }
         } catch (err: any) {
-            console.error(err);
             setError(err.message || "Error fetching games");
         } finally {
             setLoading(false);
@@ -48,14 +53,19 @@ export const AdminPanelEditGames = () => {
     };
 
     useEffect(() => {
-        fetchGames(page);
-    }, [page]);
+        fetchGames(page, search);
+    }, [page, search]);
 
     useEffect(() => {
         if (!currentUser || currentUser.role !== "admin") {
             navigate("/");
         }
     }, [currentUser, navigate]);
+
+    const handleSearch = () => {
+        if (page !== 1) setPage(1);
+        setSearch(inputValue);
+    };
 
     const updateGame = async (gameId: string, updatedFields: Partial<GameType>) => {
         try {
@@ -73,7 +83,7 @@ export const AdminPanelEditGames = () => {
                 )
             );
         } catch (err) {
-            console.error("Update error:", err);
+            console.error(err);
         }
     };
 
@@ -98,7 +108,7 @@ export const AdminPanelEditGames = () => {
 
             setGames((prev) => prev.filter((g) => g._id !== gameId));
         } catch (err) {
-            console.error("Delete error:", err);
+            console.error(err);
         }
     };
 
@@ -114,9 +124,25 @@ export const AdminPanelEditGames = () => {
                 <div className={`${style.page} ${styles.content} container py-4`}>
                     <h1 className={styles.title}>Edit Games</h1>
 
+                    <div className="mb-4 d-flex gap-2">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search game..."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleSearch();
+                            }}
+                        />
+                        <button className="btn btn-info" onClick={handleSearch}>
+                            Search
+                        </button>
+                    </div>
+
                     {games.length === 0 ? (
                         <div className="text-center text-light mt-5">
-                            ❗ Игры не найдены (проверь backend)
+                            No games found.
                         </div>
                     ) : (
                         <table className="table table-dark table-striped">
@@ -124,6 +150,7 @@ export const AdminPanelEditGames = () => {
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
+                                    <th>Icon</th>
                                     <th>Year</th>
                                     <th>Platforms</th>
                                     <th>Tools</th>
@@ -132,7 +159,7 @@ export const AdminPanelEditGames = () => {
                             <tbody>
                                 {games.map((game, index) => (
                                     <tr key={game._id}>
-                                        <th>{(page - 1) * 10 + index + 1}</th>
+                                        <th>{(page - 1) * LIMIT + index + 1}</th>
 
                                         <td>
                                             <input
@@ -140,6 +167,18 @@ export const AdminPanelEditGames = () => {
                                                 value={game.name}
                                                 onChange={(e) =>
                                                     updateGame(game._id, { name: e.target.value })
+                                                }
+                                            />
+                                        </td>
+
+                                        <td>
+                                            <input
+                                                className="form-control"
+                                                value={game.icon}
+                                                onChange={(e) =>
+                                                    updateGame(game._id, {
+                                                        icon: e.target.value,
+                                                    })
                                                 }
                                             />
                                         </td>
@@ -170,6 +209,7 @@ export const AdminPanelEditGames = () => {
                                                 </div>
                                             ))}
                                         </td>
+
                                         <td>
                                             <button
                                                 className="btn btn-danger btn-sm"
@@ -189,8 +229,7 @@ export const AdminPanelEditGames = () => {
                             {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
                                 <button
                                     key={p}
-                                    className={`btn ${page === p ? "btn-info" : "btn-outline-info"
-                                        }`}
+                                    className={`btn ${page === p ? "btn-info" : "btn-outline-info"}`}
                                     onClick={() => setPage(p)}
                                 >
                                     {p}

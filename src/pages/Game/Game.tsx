@@ -7,14 +7,19 @@ import axios from "axios";
 import styles from "../../components/styles.module.css";
 import style from "./Game.module.css";
 
+const LIMIT = 10;
+
 export const Game = () => {
     const [game, setGame] = useState<any>(null);
-    const [allRecords, setAllRecords] = useState<any[]>([]);
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const [inputValue, setInputValue] = useState("");
+    const [search, setSearch] = useState("");
+
+    const [page, setPage] = useState(1);
+    const [pages, setPages] = useState(1);
 
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,11 +31,6 @@ export const Game = () => {
 
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-
-    const timeToSeconds = (time: string) => {
-        const [h, m, s] = time.split(":").map(Number);
-        return h * 3600 + m * 60 + s;
-    };
 
     useEffect(() => {
         if (!id) return;
@@ -46,40 +46,22 @@ export const Game = () => {
                 setGame(gameRes.data);
 
                 const recordsRes = await axios.get(
-                    `http://localhost:4000/api/records/game?id=${gameRes.data._id}`
-                );
-
-                const recordsArray = recordsRes.data.records || [];
-
-                const approvedRecords = recordsArray.filter(
-                    (r: any) => r.status === "approved"
-                );
-
-                const bestRecordsMap: { [key: string]: any } = {};
-
-                approvedRecords.forEach((r: any) => {
-                    const userId = r.userId?._id;
-                    const platform = r.platform;
-                    if (!userId || !platform) return;
-
-                    const key = `${userId}_${platform}`;
-
-                    if (
-                        !bestRecordsMap[key] ||
-                        timeToSeconds(r.time) <
-                        timeToSeconds(bestRecordsMap[key].time)
-                    ) {
-                        bestRecordsMap[key] = r;
+                    `http://localhost:4000/api/records/game`,
+                    {
+                        params: {
+                            id: gameRes.data._id,
+                            page,
+                            search
+                        }
                     }
-                });
-
-                const bestRecords = Object.values(bestRecordsMap).sort(
-                    (a: any, b: any) =>
-                        timeToSeconds(a.time) - timeToSeconds(b.time)
                 );
 
-                setAllRecords(bestRecords);
-                setRecords(bestRecords);
+                setRecords(recordsRes.data.records || []);
+                setPages(recordsRes.data.pages || 1);
+                if (recordsRes.data.page !== page) {
+                    setPage(recordsRes.data.page);
+                }
+
             } catch (err: any) {
                 setError(err.message || "Error fetching data");
             } finally {
@@ -88,15 +70,11 @@ export const Game = () => {
         };
 
         fetchData();
-    }, [id]);
+    }, [id, page, search]);
 
     const handleSearch = () => {
-        const filtered = allRecords.filter((r) =>
-            r.userId?.name
-                ?.toLowerCase()
-                .includes(inputValue.toLowerCase())
-        );
-        setRecords(filtered);
+        setPage(1);
+        setSearch(inputValue);
     };
 
     return (
@@ -175,9 +153,7 @@ export const Game = () => {
                         </div>
 
                         <div className="table-responsive">
-                            <table
-                                className={`table table-hover ${style.tableCustom}`}
-                            >
+                            <table className={`table table-hover ${style.tableCustom}`}>
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -192,7 +168,7 @@ export const Game = () => {
                                     {records.length === 0 && (
                                         <tr>
                                             <td colSpan={6} className="text-center">
-                                                No approved records yet
+                                                No records
                                             </td>
                                         </tr>
                                     )}
@@ -203,21 +179,33 @@ export const Game = () => {
                                             style={{ cursor: "pointer" }}
                                             onClick={() => navigate(`/record/${record._id}`)}
                                         >
-                                            <td>{index + 1}</td>
+                                            <td>{(page - 1) * LIMIT + index + 1}</td>
                                             <td>{record.userId?.name}</td>
                                             <td>{record.platform}</td>
                                             <td>{record.time}</td>
                                             <td>{record.version}</td>
                                             <td>
-                                                {new Date(
-                                                    record.dateUpload
-                                                ).toLocaleDateString()}
+                                                {new Date(record.dateUpload).toLocaleDateString()}
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+
+                        {pages > 1 && (
+                            <div className="d-flex justify-content-center mt-4 gap-2">
+                                {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
+                                    <button
+                                        key={p}
+                                        className={`btn ${page === p ? "btn-warning" : "btn-outline-warning"}`}
+                                        onClick={() => setPage(p)}
+                                    >
+                                        {p}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
