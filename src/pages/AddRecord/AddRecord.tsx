@@ -28,6 +28,7 @@ export const AddRecord = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -87,6 +88,8 @@ export const AddRecord = () => {
         };
 
         try {
+            setIsSubmitting(true);
+
             await axios.post("http://localhost:4000/api/records", record, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -94,6 +97,8 @@ export const AddRecord = () => {
             navigate(`/games/${id}`);
         } catch (err: any) {
             setErrorMessage(err.response?.data?.message || err.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -194,13 +199,12 @@ export const AddRecord = () => {
                                     />
 
                                     <label
-                                        className={`btn btn-outline-${
-                                            p === "PC"
+                                        className={`btn btn-outline-${p === "PC"
                                                 ? "success"
                                                 : p === "Console"
-                                                ? "warning"
-                                                : "primary"
-                                        }`}
+                                                    ? "warning"
+                                                    : "primary"
+                                            }`}
                                         htmlFor={p}
                                     >
                                         {p}
@@ -232,8 +236,12 @@ export const AddRecord = () => {
                         </div>
                     )}
 
-                    <button type="submit" className="btn btn-primary w-100">
-                        Submit
+                    <button
+                        type="submit"
+                        className="btn btn-primary w-100"
+                        disabled={isSubmitting}
+                    >
+                        {isSubmitting ? "Submitting..." : "Submit"}
                     </button>
                 </form>
             </div>

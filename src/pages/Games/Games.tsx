@@ -6,6 +6,7 @@ import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
 import styles from "../../components/styles.module.css";
 import style from "./Games.module.css";
+import AdBanner from "../../components/AdBanner/AdBanner";
 
 export const Games = () => {
   const [games, setGames] = useState<any[]>([]);
@@ -13,17 +14,17 @@ export const Games = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
-
   const [inputValue, setInputValue] = useState("");
   const [search, setSearch] = useState("");
-
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const [bg] = useState<any>(
     localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user") || "{}")["background"]
       : null
   );
+
+  const topAdRef = useRef<HTMLDivElement | null>(null);
+  const bottomAdRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -36,18 +37,14 @@ export const Games = () => {
       .then((res) => {
         setGames(res.data.games || []);
         setPages(res.data.pages || 1);
-        if (res.data.page !== page) {
-          setPage(res.data.page);
-        }
+        if (res.data.page !== page) setPage(res.data.page);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [page, search]);
 
   const handleSearch = () => {
-    if (page !== 1) {
-      setPage(1);
-    }
+    if (page !== 1) setPage(1);
     setSearch(inputValue);
   };
 
@@ -56,13 +53,24 @@ export const Games = () => {
     const start = Math.max(1, page - range);
     const end = Math.min(pages, page + range);
     const result = [];
-
-    for (let i = start; i <= end; i++) {
-      result.push(i);
-    }
-
+    for (let i = start; i <= end; i++) result.push(i);
     return result;
   };
+
+  const pushAds = (adRef: React.RefObject<HTMLDivElement | null>) => {
+    if (adRef.current) {
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {
+        console.warn("Adsense push error", e);
+      }
+    }
+  };
+
+  useEffect(() => {
+    pushAds(topAdRef);
+    pushAds(bottomAdRef);
+  }, []);
 
   return (
     <div
@@ -71,9 +79,18 @@ export const Games = () => {
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        minHeight: "100vh",
       }}
     >
       <Navbar />
+
+      {/* ВЕРХНИЙ БАННЕР */}
+      <div className={style.adBanner} ref={topAdRef}>
+        <AdBanner
+          client="ca-pub-XXXXXXXXXXXXXXXX" // ваш реальный client
+          slot="1234567890"                 // ваш реальный слот
+        />
+      </div>
 
       {loading && <Loader />}
       {!loading && error && (
@@ -81,88 +98,90 @@ export const Games = () => {
       )}
 
       {!loading && !error && (
-        <>
-          <div className={`${styles.page} ${styles.content} container py-4`}>
-            <h1 className={styles.title}>Games</h1>
+        <div className={style.inner}>
+          <h1 className={styles.title}>Games</h1>
 
-            <div className="mb-4 d-flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                className="form-control"
-                placeholder="Search game..."
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSearch();
-                }}
-                autoFocus
-              />
-              <button className="btn btn-warning" onClick={handleSearch}>
-                Search
-              </button>
-            </div>
+          <div className="mb-4 d-flex gap-2">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search game..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSearch();
+              }}
+            />
+            <button className="btn btn-warning" onClick={handleSearch}>
+              Search
+            </button>
+          </div>
 
-            <div className="row g-4">
-              {games.length > 0 ? (
-                games.map((game) => (
-                  <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
-                    <NavLink
-                      to={`/games/${game._id}`}
-                      className="text-decoration-none text-dark"
-                    >
-                      <div className="card h-100">
-                        <img
-                          src={game.icon}
-                          className={`card-img-top ${style.icon}`}
-                          alt={game.name}
-                        />
-                        <div className="card-body">
-                          <h5 className="card-title">{game.name}</h5>
-                          <p className="card-text">Year: {game.year}</p>
-                          <div>
-                            {game.platform.map((p: string) => (
-                              <span
-                                key={p}
-                                className="badge bg-secondary me-1"
-                              >
-                                {p}
-                              </span>
-                            ))}
-                          </div>
+          <div className="row g-4">
+            {games.length > 0 ? (
+              games.map((game) => (
+                <div key={game._id} className="col-sm-4 col-md-3 col-lg-3">
+                  <NavLink
+                    to={`/games/${game._id}`}
+                    className="text-decoration-none text-dark"
+                  >
+                    <div className="card h-100">
+                      <img
+                        src={game.icon}
+                        className={`card-img-top ${style.icon}`}
+                        alt={game.name}
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title">{game.name}</h5>
+                        <p className="card-text">Year: {game.year}</p>
+                        <div>
+                          {game.platform.map((p: string) => (
+                            <span
+                              key={p}
+                              className="badge bg-secondary me-1"
+                            >
+                              {p}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                    </NavLink>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-5">
-                  <h5 className={styles.title}>No games found</h5>
+                    </div>
+                  </NavLink>
                 </div>
-              )}
-            </div>
-
-            {pages > 1 && (
-              <div className="d-flex justify-content-center align-items-center mt-5 gap-2 flex-wrap">
-                {getPages().map((pageNumber) => (
-                  <button
-                    key={pageNumber}
-                    className={`btn ${
-                      page === pageNumber
-                        ? "btn-warning"
-                        : "btn-outline-warning"
-                    }`}
-                    onClick={() => setPage(pageNumber)}
-                  >
-                    {pageNumber}
-                  </button>
-                ))}
+              ))
+            ) : (
+              <div className="text-center py-5">
+                <h5 className={styles.title}>No games found</h5>
               </div>
             )}
           </div>
-          <Footer />
-        </>
+
+          {pages > 1 && (
+            <div className="d-flex justify-content-center mt-5 gap-2 flex-wrap">
+              {getPages().map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  className={`btn ${page === pageNumber ? "btn-warning" : "btn-outline-warning"
+                    }`}
+                  onClick={() => setPage(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
+
+      {/* НИЖНИЙ БАННЕР */}
+      <div className={style.adBanner} ref={bottomAdRef}>
+        <AdBanner
+          client="ca-pub-XXXXXXXXXXXXXXXX" // ваш реальный client
+          slot="1234567890"                 // ваш реальный слот
+        />
+      </div>
+
+      <Footer />
     </div>
   );
 };

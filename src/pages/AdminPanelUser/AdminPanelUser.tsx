@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 
 export const AdminPanelUser = () => {
     const LIMIT = 10;
+
     const [users, setUsers] = useState<any[]>([]);
     const [rols] = useState<string[]>(["user", "blocked", "moderator", "admin"]);
     const [page, setPage] = useState(1);
@@ -14,20 +15,31 @@ export const AdminPanelUser = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    // ✅ поиск
+    const [inputValue, setInputValue] = useState("");
+    const [search, setSearch] = useState("");
+
     const currentUser = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")
         : null;
+
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
 
-    const fetchUsers = async (pageNumber = 1) => {
+    const fetchUsers = async (pageNumber = 1, searchValue = "") => {
         try {
             setLoading(true);
             setError(null);
 
             const res = await axios.get(
-                `http://localhost:4000/api/auth?page=${pageNumber}`,
-                { headers: { Authorization: `Bearer ${token}` } }
+                `http://localhost:4000/api/auth`,
+                {
+                    params: {
+                        page: pageNumber,
+                        search: searchValue, // ✅ передаём поиск
+                    },
+                    headers: { Authorization: `Bearer ${token}` },
+                }
             );
 
             const filteredUsers = res.data.users.filter(
@@ -43,6 +55,21 @@ export const AdminPanelUser = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    useEffect(() => {
+        fetchUsers(page, search); // ✅ учитываем search
+    }, [page, search]);
+
+    useEffect(() => {
+        if (!currentUser || currentUser.role === "blocked" || currentUser.role === "moderator") {
+            navigate("/");
+        }
+    }, [currentUser, navigate]);
+
+    const handleSearch = () => {
+        if (page !== 1) setPage(1);
+        setSearch(inputValue);
     };
 
     const changeRole = async (userId: string, role: string) => {
@@ -62,16 +89,6 @@ export const AdminPanelUser = () => {
         }
     };
 
-    useEffect(() => {
-        fetchUsers(page);
-    }, [page]);
-
-    useEffect(() => {
-        if (!currentUser || currentUser.role === "blocked" || currentUser.role === "moderator") {
-            navigate("/");
-        }
-    }, [currentUser, navigate]);
-
     return (
         <div className={style.page}>
             {loading && <Loader />}
@@ -83,6 +100,23 @@ export const AdminPanelUser = () => {
             {!loading && !error && (
                 <div className={`${style.page} ${styles.content} container py-4`}>
                     <h1 className={styles.title}>Admin Panel</h1>
+
+                    {/* ✅ ПОИСК */}
+                    <div className="mb-4 d-flex gap-2">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search user..."
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleSearch();
+                            }}
+                        />
+                        <button className="btn btn-info" onClick={handleSearch}>
+                            Search
+                        </button>
+                    </div>
 
                     <table className="table table-dark table-striped">
                         <thead>
@@ -140,7 +174,6 @@ export const AdminPanelUser = () => {
                             ))}
                         </div>
                     )}
-
                 </div>
             )}
         </div>

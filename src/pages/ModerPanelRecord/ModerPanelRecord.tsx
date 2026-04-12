@@ -14,6 +14,7 @@ export const ModerPanelRecord = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [filterStatus, setFilterStatus] = useState<"all" | "approved" | "pending" | "rejected">("all");
     const [openRecordId, setOpenRecordId] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const currentUser = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -47,15 +48,20 @@ export const ModerPanelRecord = () => {
     };
 
     const deleteRecord = (id: string) => {
+        setIsSubmitting(true);
+
         axios
             .delete(`http://localhost:4000/api/records/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(() => setRecords(prev => prev.filter(r => r._id !== id)))
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
+            .finally(() => setIsSubmitting(false));
     };
 
     const approveRecord = (id: string) => {
+        setIsSubmitting(true);
+
         axios
             .patch(`http://localhost:4000/api/records/${id}`, { status: "approved" }, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -63,10 +69,13 @@ export const ModerPanelRecord = () => {
             .then(() => {
                 setRecords(prev => prev.map(r => r._id === id ? { ...r, status: "approved" } : r));
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
+            .finally(() => setIsSubmitting(false));
     };
 
     const rejectedRecord = (id: string) => {
+        setIsSubmitting(true);
+
         axios
             .patch(`http://localhost:4000/api/records/${id}`, { status: "rejected" }, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -74,13 +83,12 @@ export const ModerPanelRecord = () => {
             .then(() => {
                 setRecords(prev => prev.map(r => r._id === id ? { ...r, status: "rejected" } : r));
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
+            .finally(() => setIsSubmitting(false));
     };
 
     return (
-        <div
-            className={style.page}
-        >
+        <div className={style.page}>
             <main className={styles.content}>
                 {loading && <Loader />}
                 {!loading && error && <div className="text-danger text-center py-5">{error}</div>}
@@ -131,7 +139,6 @@ export const ModerPanelRecord = () => {
                                 </thead>
                                 <tbody>
                                     {records.map((record, index) => (
-
                                         <Fragment key={record._id}>
                                             <tr
                                                 style={{ cursor: "pointer" }}
@@ -152,12 +159,6 @@ export const ModerPanelRecord = () => {
                                                     <td colSpan={8} className="bg-secondary">
                                                         <div className="p-3">
                                                             <h5>Record Information</h5>
-                                                            <p><b>Game:</b> {record.gameId?.name}</p>
-                                                            <p><b>User:</b> {record.userId?.name}</p>
-                                                            <p><b>Platform:</b> {record.platform}</p>
-                                                            <p><b>Time:</b> {record.time}</p>
-                                                            <p><b>Version:</b> {record.version}</p>
-                                                            <p><b>Status:</b> {record.status}</p>
 
                                                             {record.urlVideo && (
                                                                 <div className="ratio ratio-16x9">
@@ -167,17 +168,31 @@ export const ModerPanelRecord = () => {
 
                                                             <div className="d-flex gap-3 mt-3">
                                                                 {record.status !== "approved" && (
-                                                                    <button className="btn btn-success" onClick={() => approveRecord(record._id)}>
-                                                                        Approve
+                                                                    <button
+                                                                        className="btn btn-success"
+                                                                        onClick={() => approveRecord(record._id)}
+                                                                        disabled={isSubmitting}
+                                                                    >
+                                                                        {isSubmitting ? "Processing..." : "Approve"}
                                                                     </button>
                                                                 )}
+
                                                                 {record.status !== "approved" && record.status !== "rejected" && (
-                                                                    <button className="btn btn-warning" onClick={() => rejectedRecord(record._id)}>
-                                                                        Reject
+                                                                    <button
+                                                                        className="btn btn-warning"
+                                                                        onClick={() => rejectedRecord(record._id)}
+                                                                        disabled={isSubmitting}
+                                                                    >
+                                                                        {isSubmitting ? "Processing..." : "Reject"}
                                                                     </button>
                                                                 )}
-                                                                <button className="btn btn-danger" onClick={() => deleteRecord(record._id)}>
-                                                                    Delete
+
+                                                                <button
+                                                                    className="btn btn-danger"
+                                                                    onClick={() => deleteRecord(record._id)}
+                                                                    disabled={isSubmitting}
+                                                                >
+                                                                    {isSubmitting ? "Processing..." : "Delete"}
                                                                 </button>
                                                             </div>
                                                         </div>

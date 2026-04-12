@@ -92,7 +92,7 @@ export const Record = () => {
     setComments([res.data, ...comments]);
     setReplyText("");
     setRating(0);
-    setFormError("");
+    setFormError("Comment sent");
   };
 
   const handleReportRecord = async () => {
@@ -102,17 +102,20 @@ export const Record = () => {
     }
 
     await axios.post(
-      "http://localhost:4000/api/reports/create",
+      "http://localhost:4000/api/comments/create",
       {
         text: reportText,
-        recordId: id,
+        toUserId: record.userId._id,
+        toRecordId: id,
+        gameId: record.gameId._id,
+        type: "report",
+        rating: 0,
       },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
     setReportText("");
-    setFormError("");
-    alert("Report sent");
+    setFormError("Report sent");
   };
 
   if (loading) return <Loader />;
@@ -170,6 +173,7 @@ export const Record = () => {
         <h2 className={`mt-4 ${styles.title}`}>Comments</h2>
 
         {canComment && (
+          <div>
           <div
             className="d-flex flex-column flex-md-row mb-4 gap-2"
           >
@@ -226,6 +230,10 @@ export const Record = () => {
                 Switch
               </button>
             </div>
+          </div>
+            {formError && (
+                  <div className="alert alert-danger mt-3">{formError}</div>
+                )}
           </div>
         )}
 
