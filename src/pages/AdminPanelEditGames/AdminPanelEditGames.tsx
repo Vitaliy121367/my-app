@@ -9,6 +9,7 @@ const availablePlatforms = ["Phone", "PC", "Console"];
 const LIMIT = 20;
 
 export const AdminPanelEditGames = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const [games, setGames] = useState<GameType[]>([]);
     const [page, setPage] = useState(1);
     const [pages, setPages] = useState(1);
@@ -30,7 +31,7 @@ export const AdminPanelEditGames = () => {
         setError(null);
 
         try {
-            const res = await axios.get("http://localhost:4000/api/games/games", {
+            const res = await axios.get(`${apiUrl}/api/games/games`, {
                 params: { page: pageNumber, search: searchValue },
             });
 
@@ -70,7 +71,7 @@ export const AdminPanelEditGames = () => {
     const updateGame = async (gameId: string, updatedFields: Partial<GameType>) => {
         try {
             await axios.patch(
-                `http://localhost:4000/api/games/${gameId}`,
+                `${apiUrl}/api/games/${gameId}`,
                 updatedFields,
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -100,7 +101,7 @@ export const AdminPanelEditGames = () => {
 
         try {
             await axios.delete(
-                `http://localhost:4000/api/games/${gameId}`,
+                `${apiUrl}/api/games/${gameId}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

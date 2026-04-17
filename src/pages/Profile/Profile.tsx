@@ -8,6 +8,7 @@ import style from "./Profile.module.css";
 import Loader from "../../components/Loader/Loader";
 
 export const Profile = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const [user, setUser] = useState<any>(null);
   const [records, setRecords] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -28,14 +29,14 @@ export const Profile = () => {
         if (!token) throw new Error("Not authorized");
 
         const { data: userData } = await axios.get(
-          "http://localhost:4000/api/auth/me",
+          `${apiUrl}/api/auth/me`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
 
         const { data } = await axios.get(
-          "http://localhost:4000/api/records/user",
+          `${apiUrl}/api/records/user`,
           {
             params: {
               id: userData._id,

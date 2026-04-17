@@ -15,6 +15,7 @@ interface NewsItem {
 }
 
 export const News = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const [news, setNews] = useState<NewsItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -27,7 +28,7 @@ export const News = () => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const res = await axios.get("http://localhost:4000/api/new");
+                const res = await axios.get(`${apiUrl}/api/new`);
 
                 const newsItems: NewsItem[] = res.data.map((item: any) => ({
                     title: item.title || "No title",

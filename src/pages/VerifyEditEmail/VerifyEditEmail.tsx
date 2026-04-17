@@ -7,6 +7,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 
 export const VerifyEditEmail = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const { token } = useParams<{ token: string }>();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const hasRun = useRef(false);
@@ -17,7 +18,7 @@ export const VerifyEditEmail = () => {
 
     const verify = async () => {
       try {
-        await axios.get(`http://localhost:4000/api/auth/verify-edit/${token}`);
+        await axios.get(`${apiUrl}/api/auth/verify-edit/${token}`);
         setStatus("success");
       } catch (e) {
         setStatus("error");

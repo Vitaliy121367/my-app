@@ -7,6 +7,7 @@ import axios from "axios";
 const LIMIT = 10;
 
 export const ModerPanelRecord = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const [records, setRecords] = useState<RecordType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ export const ModerPanelRecord = () => {
         setError(null);
 
         axios
-            .get("http://localhost:4000/api/records", {
+            .get(`${apiUrl}/api/records`, {
                 params: {
                     page,
                     limit: LIMIT,
@@ -51,7 +52,7 @@ export const ModerPanelRecord = () => {
         setIsSubmitting(true);
 
         axios
-            .delete(`http://localhost:4000/api/records/${id}`, {
+            .delete(`${apiUrl}/api/records/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(() => setRecords(prev => prev.filter(r => r._id !== id)))
@@ -63,7 +64,7 @@ export const ModerPanelRecord = () => {
         setIsSubmitting(true);
 
         axios
-            .patch(`http://localhost:4000/api/records/${id}`, { status: "approved" }, {
+            .patch(`${apiUrl}/api/records/${id}`, { status: "approved" }, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(() => {
@@ -77,7 +78,7 @@ export const ModerPanelRecord = () => {
         setIsSubmitting(true);
 
         axios
-            .patch(`http://localhost:4000/api/records/${id}`, { status: "rejected" }, {
+            .patch(`${apiUrl}/api/records/${id}`, { status: "rejected" }, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(() => {

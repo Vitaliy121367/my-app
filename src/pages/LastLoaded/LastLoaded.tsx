@@ -7,6 +7,7 @@ import style from "./LastLoaded.module.css";
 import axios from "axios";
 
 export const LastLoaded = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const [lastLoaded, setLastLoaded] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -18,7 +19,7 @@ export const LastLoaded = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data } = await axios.get("http://localhost:4000/api/records/last-loaded");
+                const { data } = await axios.get(`${apiUrl}/api/records/last-loaded`);
 
                 const latestFiveApproved = data.records || [];
 

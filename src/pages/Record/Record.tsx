@@ -8,6 +8,7 @@ import axios from "axios";
 import Loader from "../../components/Loader/Loader";
 
 export const Record = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const { id } = useParams<{ id: string }>();
 
   const [record, setRecord] = useState<any>(null);
@@ -47,13 +48,13 @@ export const Record = () => {
         setLoading(true);
 
         const recRes = await axios.get(
-          `http://localhost:4000/api/records/record?id=${id}`
+          `${apiUrl}/api/records/record?id=${id}`
         );
 
         setRecord(recRes.data);
 
         const commRes = await axios.get(
-          `http://localhost:4000/api/comments/comments`,
+          `${apiUrl}/api/comments/comments`,
           { params: { toRecordId: id, page } }
         );
 
@@ -77,7 +78,7 @@ export const Record = () => {
     }
 
     const res = await axios.post(
-      "http://localhost:4000/api/comments/create",
+      "${apiUrl}/api/comments/create",
       {
         text: replyText,
         toUserId: record.userId._id,
@@ -102,7 +103,7 @@ export const Record = () => {
     }
 
     await axios.post(
-      "http://localhost:4000/api/comments/create",
+      "${apiUrl}/api/comments/create",
       {
         text: reportText,
         toUserId: record.userId._id,

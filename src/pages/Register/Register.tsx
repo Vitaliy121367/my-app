@@ -32,6 +32,7 @@ type FormControls = {
 };
 
 export const Register = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const navigate = useNavigate();
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -183,7 +184,7 @@ export const Register = () => {
         return;
       }
 
-      await axios.post("http://localhost:4000/api/auth/register", {
+      await axios.post(`${apiUrl}/api/auth/register`, {
         name: formControls.name.value,
         email: formControls.email.value,
         password: formControls.password.value,

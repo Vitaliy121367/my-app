@@ -10,6 +10,7 @@ import Loader from "../../components/Loader/Loader";
 type CommentType = "comment" | "report";
 
 export const AddComment = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
@@ -36,7 +37,7 @@ export const AddComment = () => {
                 return;
             }
             try {
-                const res = await axios.get(`http://localhost:4000/api/records/record/?id=${recordId}`);
+                const res = await axios.get(`${apiUrl}/api/records/record/?id=${recordId}`);
                 setRecord(res.data);
             } catch (err: any) {
                 setError(err.response?.data?.message || err.message);
@@ -84,7 +85,7 @@ export const AddComment = () => {
 
         try {
             if (user._id !== record.userId._id) {
-                await axios.post("http://localhost:4000/api/comments", comment, {
+                await axios.post(`${apiUrl}/api/comments`, comment, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             }

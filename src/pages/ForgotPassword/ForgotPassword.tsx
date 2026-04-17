@@ -8,6 +8,7 @@ import { Footer } from "../../components/Footer/Footer";
 import Input from "../../UI/Input/Input";
 
 export const ForgotPassword = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -21,7 +22,7 @@ export const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:4000/api/auth/forgot-password", {
+      await axios.post(`${apiUrl}/api/auth/forgot-password`, {
         email,
       });
 

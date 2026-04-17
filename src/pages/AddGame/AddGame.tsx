@@ -5,6 +5,7 @@ import style from "./AddGame.module.css";
 import axios from "axios";
 
 export const AddGame = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -54,7 +55,7 @@ export const AddGame = () => {
         };
 
         try {
-            await axios.post("http://localhost:4000/api/games", game, {
+            await axios.post(`${apiUrl}/api/games`, game, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

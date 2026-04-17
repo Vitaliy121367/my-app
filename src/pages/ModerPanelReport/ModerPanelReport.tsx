@@ -7,6 +7,7 @@ import axios from "axios";
 const LIMIT = 10;
 
 export const ModerPanelReport = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export const ModerPanelReport = () => {
     if (filterType !== "all") params.type = filterType;
 
     axios
-      .get("http://localhost:4000/api/comments/reports", { params })
+      .get(`${apiUrl}/api/comments/reports`, { params })
       .then((res) => {
         setReports(res.data.data || []);
         setTotalPages(res.data.pagination.pages || 1);
@@ -51,7 +52,7 @@ export const ModerPanelReport = () => {
   const checkReport = (id: string) => {
     axios
       .patch(
-        `http://localhost:4000/api/comments/${id}`,
+        `${apiUrl}/api/comments/${id}`,
         { type: "checked" },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -61,14 +62,14 @@ export const ModerPanelReport = () => {
 
   const removeRecord = (recordId: string, commentId: string) => {
     axios
-      .delete(`http://localhost:4000/api/records/${recordId}`, {
+      .delete(`${apiUrl}/api/records/${recordId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .catch((err) => console.error(err));
 
     axios
       .patch(
-        `http://localhost:4000/api/comments/${commentId}`,
+        `${apiUrl}/api/comments/${commentId}`,
         { type: "checked" },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -79,7 +80,7 @@ export const ModerPanelReport = () => {
   const blockUser = (userId: string, recordId: string, commentId: string) => {
     axios
       .patch(
-        `http://localhost:4000/api/auth/update/?id=${userId}`,
+        `${apiUrl}/api/auth/update/?id=${userId}`,
         { role: "blocked" },
         { headers: { Authorization: `Bearer ${token}` } }
       )

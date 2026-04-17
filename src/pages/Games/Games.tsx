@@ -9,6 +9,7 @@ import style from "./Games.module.css";
 import AdBanner from "../../components/AdBanner/AdBanner";
 
 export const Games = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +32,7 @@ export const Games = () => {
     setError(null);
 
     axios
-      .get("http://localhost:4000/api/games/games", {
+      .get(`${apiUrl}/api/games/games`, {
         params: { page, search },
       })
       .then((res) => {
@@ -84,11 +85,10 @@ export const Games = () => {
     >
       <Navbar />
 
-      {/* ВЕРХНИЙ БАННЕР */}
       <div className={style.adBanner} ref={topAdRef}>
         <AdBanner
-          client="ca-pub-XXXXXXXXXXXXXXXX" // ваш реальный client
-          slot="1234567890"                 // ваш реальный слот
+          client="ca-pub-XXXXXXXXXXXXXXXX" 
+          slot="1234567890"                
         />
       </div>
 
@@ -173,11 +173,10 @@ export const Games = () => {
         </div>
       )}
 
-      {/* НИЖНИЙ БАННЕР */}
       <div className={style.adBanner} ref={bottomAdRef}>
         <AdBanner
-          client="ca-pub-XXXXXXXXXXXXXXXX" // ваш реальный client
-          slot="1234567890"                 // ваш реальный слот
+          client="ca-pub-XXXXXXXXXXXXXXXX" 
+          slot="1234567890"                
         />
       </div>
 

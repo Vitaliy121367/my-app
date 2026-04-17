@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 
 export const AdminPanelUser = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const LIMIT = 10;
 
     const [users, setUsers] = useState<any[]>([]);
@@ -15,7 +16,6 @@ export const AdminPanelUser = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // ✅ поиск
     const [inputValue, setInputValue] = useState("");
     const [search, setSearch] = useState("");
 
@@ -32,11 +32,11 @@ export const AdminPanelUser = () => {
             setError(null);
 
             const res = await axios.get(
-                `http://localhost:4000/api/auth`,
+                `${apiUrl}/api/auth`,
                 {
                     params: {
                         page: pageNumber,
-                        search: searchValue, // ✅ передаём поиск
+                        search: searchValue, 
                     },
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -58,7 +58,7 @@ export const AdminPanelUser = () => {
     };
 
     useEffect(() => {
-        fetchUsers(page, search); // ✅ учитываем search
+        fetchUsers(page, search); 
     }, [page, search]);
 
     useEffect(() => {
@@ -75,7 +75,7 @@ export const AdminPanelUser = () => {
     const changeRole = async (userId: string, role: string) => {
         try {
             await axios.patch(
-                `http://localhost:4000/api/auth/role/${userId}`,
+                `${apiUrl}/api/auth/role/${userId}`,
                 { role },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -101,7 +101,6 @@ export const AdminPanelUser = () => {
                 <div className={`${style.page} ${styles.content} container py-4`}>
                     <h1 className={styles.title}>Admin Panel</h1>
 
-                    {/* ✅ ПОИСК */}
                     <div className="mb-4 d-flex gap-2">
                         <input
                             type="text"

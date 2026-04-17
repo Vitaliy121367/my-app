@@ -26,6 +26,7 @@ type Control = { type: string; label: string; errorMessage: string; value: strin
 type FormControls = { name: Control; email: Control; password: Control; passwordConfirmation: Control; icon: Control; background: Control; country: Control; passwordDelete: Control; passwordDeleteConfirmation: Control; };
 
 export const Settings = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const savedUser = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
@@ -138,7 +139,7 @@ export const Settings = () => {
       if (formControls.password.value.trim() !== "") updatedData.password = formControls.password.value;
 
       const res = await axios.patch(
-        `http://localhost:4000/api/auth/update`,
+        `${apiUrl}/api/auth/update`,
         updatedData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -170,7 +171,7 @@ export const Settings = () => {
     if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
 
     try {
-      await axios.delete("http://localhost:4000/api/auth/remove", {
+      await axios.delete(`${apiUrl}/api/auth/remove`, {
         data: { password },
         headers: { Authorization: `Bearer ${token}` }
       });

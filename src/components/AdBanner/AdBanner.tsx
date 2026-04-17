@@ -40,25 +40,25 @@ const AdBanner: FC<AdBannerProps> = ({
         }
     }, [location, devMode]);
 
-    if (devMode) {
-        return (
-            <div
-                style={{
-                    ...style,
-                    background: "#f0f0f0",
-                    border: "2px dashed #999",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#666",
-                    borderRadius: "10px",
-                    textAlign: "center",
-                }}
-            >
-                AD (DEV MODE)
-            </div>
-        );
-    }
+    // if (devMode) {
+    //     return (
+    //         <div
+    //             style={{
+    //                 ...style,
+    //                 background: "#f0f0f0",
+    //                 border: "2px dashed #999",
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 justifyContent: "center",
+    //                 color: "#666",
+    //                 borderRadius: "10px",
+    //                 textAlign: "center",
+    //             }}
+    //         >
+    //             AD (DEV MODE)
+    //         </div>
+    //     );
+    // }
 
     return (
         <ins

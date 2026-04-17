@@ -7,6 +7,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 
 export const Verify = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const { token } = useParams();
   const [status, setStatus] = useState("loading");
   const hasRun = useRef(false);
@@ -18,7 +19,7 @@ export const Verify = () => {
     const verify = async () => {
       try {
         await axios.get(
-          `http://localhost:4000/api/auth/verify/${token}`
+          `${apiUrl}/api/auth/verify/${token}`
         );
         setStatus("success");
       } catch (e) {

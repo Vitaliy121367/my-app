@@ -9,6 +9,7 @@ import axios from "axios";
 type Platform = "PC" | "Console" | "Phone";
 
 export const AddRecord = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -36,7 +37,7 @@ export const AddRecord = () => {
         setLoading(true);
 
         axios
-            .get(`http://localhost:4000/api/games/${id}`)
+            .get(`${apiUrl}/api/games/${id}`)
             .then(res => setGame(res.data))
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
@@ -90,7 +91,7 @@ export const AddRecord = () => {
         try {
             setIsSubmitting(true);
 
-            await axios.post("http://localhost:4000/api/records", record, {
+            await axios.post("${apiUrl}/api/records", record, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

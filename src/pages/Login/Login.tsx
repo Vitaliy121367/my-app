@@ -30,6 +30,7 @@ type FormControls = {
 };
 
 export const Login = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const navigate = useNavigate();
 
   const [isFormValid, setIsFormValid] = useState(false);
@@ -106,7 +107,7 @@ export const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", {
+      const res = await axios.post(`${apiUrl}/api/auth/login`, {
         email: formControls.email.value,
         password: formControls.password.value,
       });
@@ -115,7 +116,7 @@ export const Login = () => {
 
       localStorage.setItem("token", token);
 
-      const resUser = await axios.get("http://localhost:4000/api/auth/me", {
+      const resUser = await axios.get(`${apiUrl}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

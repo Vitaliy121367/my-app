@@ -10,6 +10,7 @@ import style from "./Game.module.css";
 const LIMIT = 10;
 
 export const Game = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const [game, setGame] = useState<any>(null);
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -41,12 +42,12 @@ export const Game = () => {
 
             try {
                 const gameRes = await axios.get(
-                    `http://localhost:4000/api/games/${id}`
+                    `${apiUrl}/api/games/${id}`
                 );
                 setGame(gameRes.data);
 
                 const recordsRes = await axios.get(
-                    `http://localhost:4000/api/records/game`,
+                    `${apiUrl}/api/records/game`,
                     {
                         params: {
                             id: gameRes.data._id,

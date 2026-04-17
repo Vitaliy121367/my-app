@@ -9,6 +9,7 @@ import styles from "../../components/styles.module.css";
 import style from "./ResetPassword.module.css";
 
 export const ResetPassword = () => {
+  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -41,7 +42,7 @@ export const ResetPassword = () => {
 
     try {
       await axios.post(
-        `http://localhost:4000/api/auth/reset-password/${token}`,
+        `${apiUrl}/api/auth/reset-password/${token}`,
         { password }
       );
       setMessage("Password updated successfully!");
