@@ -5,7 +5,7 @@ import styles from "../../components/styles.module.css";
 import style from "./ModerPanel.module.css";
 import { ModerPanelReport } from "../ModerPanelReport/ModerPanelReport";
 import { ModerPanelRecord } from "../ModerPanelRecord/ModerPanelRecord";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const ModerPanel = () => {
     const currentUser = localStorage.getItem("user")
