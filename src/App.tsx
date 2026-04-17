@@ -22,7 +22,6 @@ import { ResetPassword } from './pages/ResetPassword/ResetPassword';
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Games />} />
           <Route path="/games/:id" element={<Game />} />
@@ -42,7 +41,6 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </BrowserRouter>
     </div>
   );
 }
