@@ -25,9 +25,21 @@
     "express": "^4.19.2"
   },
   "scripts": {
-    "start": "serve -s build -l 8080",
+    "start": "serve -s build -l $PORT",
     "build": "react-scripts build",
     "postinstall": "npm run build"
   },
-  "homepage": "."
+  "homepage": ".",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
