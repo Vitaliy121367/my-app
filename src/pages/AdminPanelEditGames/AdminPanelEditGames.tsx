@@ -3,7 +3,7 @@ import Loader from "../../components/Loader/Loader";
 import styles from "../../components/styles.module.css";
 import style from "./AdminPanelEditGames.module.css";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const availablePlatforms = ["Phone", "PC", "Console"];
 const LIMIT = 20;
