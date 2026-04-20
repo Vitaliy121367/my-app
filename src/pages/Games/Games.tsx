@@ -6,7 +6,6 @@ import { Footer } from "../../components/Footer/Footer";
 import Loader from "../../components/Loader/Loader";
 import styles from "../../components/styles.module.css";
 import style from "./Games.module.css";
-import AdBanner from "../../components/AdBanner/AdBanner";
 
 export const Games = () => {
   const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
@@ -58,21 +57,6 @@ export const Games = () => {
     return result;
   };
 
-  const pushAds = (adRef: React.RefObject<HTMLDivElement | null>) => {
-    if (adRef.current) {
-      try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {
-        console.warn("Adsense push error", e);
-      }
-    }
-  };
-
-  useEffect(() => {
-    pushAds(topAdRef);
-    pushAds(bottomAdRef);
-  }, []);
-
   return (
     <div
       className={styles.page}
@@ -84,13 +68,6 @@ export const Games = () => {
       }}
     >
       <Navbar />
-
-      <div className={style.adBanner} ref={topAdRef}>
-        <AdBanner
-          client="ca-pub-XXXXXXXXXXXXXXXX" 
-          slot="1234567890"                
-        />
-      </div>
 
       {loading && <Loader />}
       {!loading && error && (
@@ -172,13 +149,6 @@ export const Games = () => {
           )}
         </div>
       )}
-
-      <div className={style.adBanner} ref={bottomAdRef}>
-        <AdBanner
-          client="ca-pub-XXXXXXXXXXXXXXXX" 
-          slot="1234567890"                
-        />
-      </div>
 
       <Footer />
     </div>
