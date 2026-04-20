@@ -3,7 +3,7 @@ import Loader from "../../components/Loader/Loader";
 import styles from "../../components/styles.module.css";
 import style from "./AdminPanelUser.module.css";
 import axios from "axios";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export const AdminPanelUser = () => {
   const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
