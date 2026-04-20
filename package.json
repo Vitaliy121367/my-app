@@ -25,8 +25,8 @@
     "express": "^4.19.2"
   },
   "scripts": {
+    "start": "serve -s build -l 8080",
     "build": "react-scripts build",
-    "start": "node server.js",
     "postinstall": "npm run build"
   },
   "homepage": "."
