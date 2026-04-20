@@ -18,35 +18,16 @@
     "i18n-iso-countries": "^7.14.0",
     "js-sha1": "^0.7.0",
     "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.3",
     "react-scripts": "5.0.1",
-    "serve": "^14.2.6",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "express": "^4.19.2"
   },
   "scripts": {
-    "start": "serve -s build -l 3000",
-    "start:prod": "serve -s build -l $PORT",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "start": "node server.js",
+    "postinstall": "npm run build"
   },
-  "homepage": ".",
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "homepage": "."
 }
