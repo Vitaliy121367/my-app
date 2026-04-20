@@ -5,7 +5,7 @@ import styles from "../../components/styles.module.css";
 import style from "./AdminPanel.module.css";
 import { ModerPanelReport } from "../ModerPanelReport/ModerPanelReport";
 import { ModerPanelRecord } from "../ModerPanelRecord/ModerPanelRecord";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { AdminPanelUser } from "../AdminPanelUser/AdminPanelUser";
 import { AddGame } from "../AddGame/AddGame";
 import { AdminPanelEditGames } from "../AdminPanelEditGames/AdminPanelEditGames";
