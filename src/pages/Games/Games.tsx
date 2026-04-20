@@ -58,20 +58,25 @@ export const Games = () => {
   };
 
   return (
-    <div
-      className={styles.page}
-      style={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Navbar />
+  <div
+    className={styles.page}
+    style={{
+      backgroundImage: `url(${bg})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      minHeight: "100vh",
+    }}
+  >
+    <Navbar />
 
+    {/* ВАЖНО: контент теперь в flex-растягиваемом блоке */}
+    <div className={styles.content}>
       {loading && <Loader />}
+
       {!loading && error && (
-        <div className="text-danger text-center py-5">Error: {error}</div>
+        <div className="text-danger text-center py-5">
+          Error: {error}
+        </div>
       )}
 
       {!loading && !error && (
@@ -138,8 +143,11 @@ export const Games = () => {
               {getPages().map((pageNumber) => (
                 <button
                   key={pageNumber}
-                  className={`btn ${page === pageNumber ? "btn-warning" : "btn-outline-warning"
-                    }`}
+                  className={`btn ${
+                    page === pageNumber
+                      ? "btn-warning"
+                      : "btn-outline-warning"
+                  }`}
                   onClick={() => setPage(pageNumber)}
                 >
                   {pageNumber}
@@ -149,8 +157,9 @@ export const Games = () => {
           )}
         </div>
       )}
-
-      <Footer />
     </div>
-  );
+
+    <Footer />
+  </div>
+);
 };
