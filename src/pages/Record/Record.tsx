@@ -36,11 +36,9 @@ export const Record = () => {
 
   const canComment = !!user;
 
-  // 🔥 ФУНКЦИЯ ДЛЯ ВИДЕО
   const getVideoData = (url: string) => {
     if (!url) return { type: "unknown", embedUrl: "" };
 
-    // YouTube
     if (url.includes("youtube.com") || url.includes("youtu.be")) {
       let videoId = "";
 
@@ -56,7 +54,6 @@ export const Record = () => {
       };
     }
 
-    // Twitch
     if (url.includes("twitch.tv")) {
       if (url.includes("/videos/")) {
         const videoId = url.split("/videos/")[1];
@@ -193,7 +190,6 @@ export const Record = () => {
           </div>
         </div>
 
-        {/* VIDEO */}
         <div className={`card ${style.body}`}>
           <div>Platform: {record.platform}</div>
           <div>Time: {record.time}</div>

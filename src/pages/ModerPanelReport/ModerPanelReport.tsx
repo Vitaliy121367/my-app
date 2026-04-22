@@ -7,7 +7,7 @@ import axios from "axios";
 const LIMIT = 10;
 
 export const ModerPanelReport = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+  const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +33,13 @@ export const ModerPanelReport = () => {
     axios
       .get(`${apiUrl}/api/comments/reports`, { params })
       .then((res) => {
-        setReports(res.data.data || []);
+        const data = res.data.data || [];
+
+        const filtered = data.filter(
+          (r: any) => r.fromUserId?._id !== currentUserId
+        );
+
+        setReports(filtered);
         setTotalPages(res.data.pagination.pages || 1);
       })
       .catch((err) => setError(err.message))
