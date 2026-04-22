@@ -34,12 +34,6 @@ export const Record = () => {
 
   const canComment = !!user;
 
-  const getEmbedUrl = (url: string) => {
-    if (!url) return "";
-    const videoId = url.split("v=")[1];
-    return `https://www.youtube.com/embed/${videoId}`;
-  };
-
   useEffect(() => {
     if (!id) return;
 
@@ -78,7 +72,7 @@ export const Record = () => {
     }
 
     const res = await axios.post(
-      "${apiUrl}/api/comments/create",
+      `${apiUrl}/api/comments/create`,
       {
         text: replyText,
         toUserId: record.userId._id,
@@ -103,7 +97,7 @@ export const Record = () => {
     }
 
     await axios.post(
-      "${apiUrl}/api/comments/create",
+      `${apiUrl}/api/comments/create`,
       {
         text: reportText,
         toUserId: record.userId._id,
@@ -165,7 +159,7 @@ export const Record = () => {
           <div style={{ width: "100%" }}>
             <iframe
               className={style.video}
-              src={getEmbedUrl(record.urlVideo)}
+              src={record.urlVideo}
               allowFullScreen
             />
           </div>
