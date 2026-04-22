@@ -9,7 +9,7 @@ import axios from "axios";
 type Platform = "PC" | "Console" | "Phone";
 
 export const AddRecord = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+    const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -91,7 +91,7 @@ export const AddRecord = () => {
         try {
             setIsSubmitting(true);
 
-            await axios.post("${apiUrl}/api/records", record, {
+            await axios.post(`${apiUrl}/api/records`, record, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -113,7 +113,15 @@ export const AddRecord = () => {
     if (error) return <div className="text-danger text-center py-5">{error}</div>;
 
     return (
-        <div>
+        <div
+            className={styles.page}
+            style={{
+                backgroundImage: `url(${bg})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                minHeight: "100vh",
+            }}
+        >
             <Navbar />
 
             <div
@@ -201,10 +209,10 @@ export const AddRecord = () => {
 
                                     <label
                                         className={`btn btn-outline-${p === "PC"
-                                                ? "success"
-                                                : p === "Console"
-                                                    ? "warning"
-                                                    : "primary"
+                                            ? "success"
+                                            : p === "Console"
+                                                ? "warning"
+                                                : "primary"
                                             }`}
                                         htmlFor={p}
                                     >
