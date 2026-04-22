@@ -26,6 +26,8 @@ export const Record = () => {
   const [reportText, setReportText] = useState("");
   const [formError, setFormError] = useState("");
 
+  const [videoError, setVideoError] = useState(false);
+
   const user = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user") || "{}")
     : null;
@@ -33,6 +35,46 @@ export const Record = () => {
   const token = localStorage.getItem("token");
 
   const canComment = !!user;
+
+  // 🔥 ФУНКЦИЯ ДЛЯ ВИДЕО
+  const getVideoData = (url: string) => {
+    if (!url) return { type: "unknown", embedUrl: "" };
+
+    // YouTube
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+      let videoId = "";
+
+      if (url.includes("watch?v=")) {
+        videoId = url.split("watch?v=")[1].split("&")[0];
+      } else if (url.includes("youtu.be/")) {
+        videoId = url.split("youtu.be/")[1].split("?")[0];
+      }
+
+      return {
+        type: "youtube",
+        embedUrl: `https://www.youtube.com/embed/${videoId}`,
+      };
+    }
+
+    // Twitch
+    if (url.includes("twitch.tv")) {
+      if (url.includes("/videos/")) {
+        const videoId = url.split("/videos/")[1];
+        return {
+          type: "twitch-video",
+          embedUrl: `https://player.twitch.tv/?video=${videoId}&parent=localhost`,
+        };
+      }
+
+      const channel = url.split("twitch.tv/")[1];
+      return {
+        type: "twitch-stream",
+        embedUrl: `https://player.twitch.tv/?channel=${channel}&parent=localhost`,
+      };
+    }
+
+    return { type: "unknown", embedUrl: url };
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -116,6 +158,8 @@ export const Record = () => {
   if (loading) return <Loader />;
   if (error) return <div className="text-danger text-center">{error}</div>;
 
+  const video = getVideoData(record?.urlVideo);
+
   return (
     <div
       style={{
@@ -133,7 +177,6 @@ export const Record = () => {
 
         <h1 className={styles.title}>Record</h1>
 
-        {/* USER */}
         <div className="profile-header p-3 p-md-4 mb-3 d-flex align-items-center">
           <img
             src={
@@ -157,11 +200,19 @@ export const Record = () => {
           <div>Version: {record.version}</div>
 
           <div style={{ width: "100%" }}>
-            <iframe
-              className={style.video}
-              src={record.urlVideo}
-              allowFullScreen
-            />
+            {!videoError && video.type !== "unknown" ? (
+              <iframe
+                className={style.video}
+                src={video.embedUrl}
+                onError={() => setVideoError(true)}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <a href={record.urlVideo} target="_blank">
+                Смотреть видео
+              </a>
+            )}
           </div>
         </div>
 
@@ -169,9 +220,7 @@ export const Record = () => {
 
         {canComment && (
           <div>
-          <div
-            className="d-flex flex-column flex-md-row mb-4 gap-2"
-          >
+          <div className="d-flex flex-column flex-md-row mb-4 gap-2">
             <textarea
               className="form-control"
               style={{ minHeight: "60px" }}
@@ -227,12 +276,11 @@ export const Record = () => {
             </div>
           </div>
             {formError && (
-                  <div className="alert alert-danger mt-3">{formError}</div>
-                )}
+              <div className="alert alert-danger mt-3">{formError}</div>
+            )}
           </div>
         )}
 
-        {/* COMMENTS */}
         {comments.map((c) => (
           <div key={c._id} className={`card mb-2 ${style.body}`}>
             <div className="card-body d-flex gap-2 flex-column flex-sm-row">
@@ -269,7 +317,6 @@ export const Record = () => {
           </div>
         ))}
 
-        {/* PAGINATION */}
         {pages > 1 && (
           <div className="d-flex justify-content-center mt-4 gap-2 flex-wrap">
             {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
