@@ -2,42 +2,67 @@
   display: flex;
   flex-direction: column;
   min-height: 60vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-.table_responsive {
+.container {
+  max-width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.tableWrap {
+  width: 100%;
   overflow-x: auto;
 }
 
 table {
+  width: 100%;
   min-width: 600px;
+  border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
   white-space: normal;
   word-break: break-word;
   padding: 6px;
+  font-size: 14px;
 }
 
+/* видео */
 iframe {
   width: 100%;
   height: 100%;
   border: none;
 }
 
-.mobileCards {
+.d-flex button {
+  flex: 1;
+  font-size: 12px;
+  padding: 6px;
+}
+
+
+.mobile {
   display: none;
 }
 
-.desktopTable {
-  display: block;
+.card {
+  background: #1e1e1e;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: white;
 }
 
 @media (max-width: 768px) {
-  .desktopTable {
+  .tableWrap {
     display: none;
   }
 
-  .mobileCards {
+  .mobile {
     display: flex;
     flex-direction: column;
     gap: 10px;
