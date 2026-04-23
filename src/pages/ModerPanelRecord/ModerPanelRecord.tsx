@@ -124,7 +124,7 @@ export const ModerPanelRecord = () => {
                             </button>
                         </div>
 
-                        <div className={styles.table_responsive}>
+                        <div className="table-responsive">
                             <table className="table table-dark table-striped">
                                 <thead>
                                     <tr>
