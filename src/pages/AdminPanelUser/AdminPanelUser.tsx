@@ -6,7 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export const AdminPanelUser = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+    const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const LIMIT = 10;
 
     const [users, setUsers] = useState<any[]>([]);
@@ -36,7 +36,7 @@ export const AdminPanelUser = () => {
                 {
                     params: {
                         page: pageNumber,
-                        search: searchValue, 
+                        search: searchValue,
                     },
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -58,7 +58,7 @@ export const AdminPanelUser = () => {
     };
 
     useEffect(() => {
-        fetchUsers(page, search); 
+        fetchUsers(page, search);
     }, [page, search]);
 
     useEffect(() => {
@@ -116,49 +116,50 @@ export const AdminPanelUser = () => {
                             Search
                         </button>
                     </div>
-
-                    <table className="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Icon</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {users.map((u, index) => (
-                                <tr key={u._id}>
-                                    <th scope="row">{(page - 1) * LIMIT + index + 1}</th>
-                                    <td>
-                                        <img
-                                            src={u.icon || "https://cdn-icons-png.freepik.com/256/12225/12225881.png"}
-                                            className="rounded-circle"
-                                            width={60}
-                                            height={60}
-                                            alt="Avatar"
-                                        />
-                                    </td>
-                                    <td>{u.name}</td>
-                                    <td>{u.email}</td>
-                                    <td>
-                                        <select
-                                            className="form-select"
-                                            value={u.role}
-                                            style={{ backgroundColor: "#1e1e1e", color: "white" }}
-                                            onChange={(e) => changeRole(u._id, e.target.value)}
-                                        >
-                                            {rols.map(role => (
-                                                <option key={role} value={role}>{role}</option>
-                                            ))}
-                                        </select>
-                                    </td>
+                    <div className="table-responsive">
+                        <table className="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Icon</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+
+                            <tbody>
+                                {users.map((u, index) => (
+                                    <tr key={u._id}>
+                                        <th scope="row">{(page - 1) * LIMIT + index + 1}</th>
+                                        <td>
+                                            <img
+                                                src={u.icon || "https://cdn-icons-png.freepik.com/256/12225/12225881.png"}
+                                                className="rounded-circle"
+                                                width={60}
+                                                height={60}
+                                                alt="Avatar"
+                                            />
+                                        </td>
+                                        <td>{u.name}</td>
+                                        <td>{u.email}</td>
+                                        <td>
+                                            <select
+                                                className="form-select"
+                                                value={u.role}
+                                                style={{ backgroundColor: "#1e1e1e", color: "white" }}
+                                                onChange={(e) => changeRole(u._id, e.target.value)}
+                                            >
+                                                {rols.map(role => (
+                                                    <option key={role} value={role}>{role}</option>
+                                                ))}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     {pages > 1 && (
                         <div className="d-flex justify-content-center mt-4 gap-2 flex-wrap">

@@ -9,7 +9,7 @@ const availablePlatforms = ["Phone", "PC", "Console"];
 const LIMIT = 20;
 
 export const AdminPanelEditGames = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+    const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
     const [games, setGames] = useState<GameType[]>([]);
     const [page, setPage] = useState(1);
     const [pages, setPages] = useState(1);
@@ -145,7 +145,7 @@ export const AdminPanelEditGames = () => {
                         <div className="text-center text-light mt-5">
                             No games found.
                         </div>
-                    ) : (
+                    ) : (<div className="table-responsive">
                         <table className="table table-dark table-striped">
                             <thead>
                                 <tr>
@@ -223,6 +223,7 @@ export const AdminPanelEditGames = () => {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
                     )}
 
                     {pages > 1 && (
