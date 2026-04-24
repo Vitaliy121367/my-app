@@ -63,7 +63,6 @@
   font-size: 13px;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .top {
     grid-template-columns: 1fr 1fr;
