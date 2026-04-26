@@ -92,17 +92,31 @@ export const Settings = () => {
 
   const validateControl = (value: string, rules: ValidationRules) => {
     if (!rules) return true;
+
     let isValid = true;
-    if (rules.required) isValid = value.trim() !== "" && isValid;
-    if (rules.minLength) isValid = value.length >= rules.minLength && isValid;
-    if (rules.email) isValid = /\S+@\S+\.\S+/.test(value) && isValid;
+
+    if (rules.required) {
+      isValid = value.trim() !== "" && isValid;
+    }
+
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules.email) {
+      isValid = /\S+@\S+\.\S+/.test(value) && isValid;
+    }
+
     if (rules.url) {
-      try {
-        new URL(value);
-      } catch {
-        isValid = false;
+      if (value.trim() !== "") {
+        try {
+          new URL(value);
+        } catch {
+          isValid = false;
+        }
       }
     }
+
     return isValid;
   };
 
