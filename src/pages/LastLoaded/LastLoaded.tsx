@@ -74,7 +74,7 @@ export const LastLoaded = () => {
 
                 {!loading && !error && lastLoaded.length > 0 && (
                     <div className="p-4 mb-4">
-                        <h2 className={`${styles.title} mb-4`}>Last Loaded</h2>
+                        <h2 className={`${styles.title} m-4`}>Last Loaded</h2>
 
                         <div className={style.runsGrid}>
                             {lastLoaded.map((record: any) => (

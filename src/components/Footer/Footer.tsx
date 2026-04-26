@@ -9,7 +9,7 @@ export const Footer = () => {
         <div className={styles.column}>
           <h3 className={styles.logo}>FastRuns</h3>
           <p className={styles.description}>
-            FastRuns — платформа для каталогу ігор, рекордів та ігрового ком'юніті.
+            FastRuns — платформа для каталогу ігор, рекордів категорії Any% та ігрового ком'юніті.
             Відкривай, порівнюй і поділися здобутками.
           </p>
         </div>

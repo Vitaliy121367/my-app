@@ -205,9 +205,7 @@ export const Record = () => {
                 allowFullScreen
               />
             ) : (
-              <a href={record.urlVideo} target="_blank">
-                Смотреть видео
-              </a>
+              <a href={record.urlVideo} target="_blank"></a>
             )}
           </div>
         </div>
@@ -258,16 +256,16 @@ export const Record = () => {
                   mode === "comment" ? handleReply() : handleReportRecord()
                 }
               >
-                {mode === "comment" ? "Post Comment" : "Send Report"}
+                {mode === "comment" ? "Send Comment" : "Send Report"}
               </button>
-
+ 
               <button
-                className="btn btn-outline-secondary btn-sm"
+                className="btn btn-secondary btn-sm"
                 onClick={() =>
                   setMode(mode === "comment" ? "report" : "comment")
                 }
               >
-                Switch
+                Сomment/Report
               </button>
             </div>
           </div>

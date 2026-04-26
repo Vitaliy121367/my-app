@@ -97,7 +97,7 @@ export const AdminPanelEditGames = () => {
     };
 
     const deleteGame = async (gameId: string) => {
-        if (!window.confirm("Удалить игру?")) return;
+        if (!window.confirm("Delete game?")) return;
 
         try {
             await axios.delete(

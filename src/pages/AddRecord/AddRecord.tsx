@@ -147,7 +147,6 @@ export const AddRecord = () => {
                                 className="form-control"
                                 placeholder="HH"
                                 min="0"
-                                max="23"
                                 value={time.hours}
                                 onChange={handleTimeChange}
                             />

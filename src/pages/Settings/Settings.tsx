@@ -167,11 +167,15 @@ export const Settings = () => {
 
     if (!token) return setError("Not authorized");
 
-    const iconValid = await isImageUrl(formControls.icon.value);
-    const bgValid = await isImageUrl(formControls.background.value);
+    if (formControls.icon.value.trim() !== "") {
+      const iconValid = await isImageUrl(formControls.icon.value);
+      if (!iconValid) return setError("Icon URL is not a valid image");
+    }
 
-    if (!iconValid) return setError("Icon URL is not a valid image");
-    if (!bgValid) return setError("Background URL is not a valid image");
+    if (formControls.background.value.trim() !== "") {
+      const bgValid = await isImageUrl(formControls.background.value);
+      if (!bgValid) return setError("Background URL is not a valid image");
+    }
 
     if (formControls.password.value) {
       const { minLength, hasUppercase, hasLowercase } = passwordValidation;
