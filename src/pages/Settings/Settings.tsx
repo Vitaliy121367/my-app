@@ -194,8 +194,15 @@ export const Settings = () => {
 
       Object.keys(formControls).forEach(key => {
         const control = formControls[key as keyof FormControls];
-        if (control.value.trim() !== "" && control.value !== user[key]) {
-          updatedData[key] = control.value;
+
+        if (key === "icon" || key === "background") {
+          if (control.value !== user[key]) {
+            updatedData[key] = control.value;
+          }
+        } else {
+          if (control.value.trim() !== "" && control.value !== user[key]) {
+            updatedData[key] = control.value;
+          }
         }
       });
 
