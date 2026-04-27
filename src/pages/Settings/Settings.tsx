@@ -44,22 +44,13 @@ type FormControls = {
   passwordDeleteConfirmation: Control;
 };
 
-const isImageUrl = (url: string): Promise<boolean> => {
-  return new Promise(resolve => {
-    if (!url) return resolve(false);
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = url;
-  });
-};
-
 export const Settings = () => {
   const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
   const savedUser = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 
   const [user, setUser] = useState<any>(savedUser ? JSON.parse(savedUser) : null);
+  const [files, setFiles] = useState<{ icon?: File; background?: File }>({});
   const [bg, setBg] = useState<string>(user?.background || "");
   const [error, setError] = useState("");
   const [errorDel, setErrorDel] = useState("");
@@ -174,66 +165,48 @@ export const Settings = () => {
     setIsFormValid(formValid);
   };
 
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>, field: "icon" | "background") => {
+    if (e.target.files && e.target.files[0]) {
+      setFiles(prev => ({ ...prev, [field]: e.target.files![0] }));
+    }
+  };
+
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setInfoMessage("");
 
     if (!token) return setError("Not authorized");
 
-    if (formControls.icon.value.trim() !== "") {
-      const iconValid = await isImageUrl(formControls.icon.value);
-      if (!iconValid) return setError("Icon URL is not a valid image");
-    }
-
-    if (formControls.background.value.trim() !== "") {
-      const bgValid = await isImageUrl(formControls.background.value);
-      if (!bgValid) return setError("Background URL is not a valid image");
-    }
-
-    if (formControls.password.value) {
-      const { minLength, hasUppercase, hasLowercase } = passwordValidation;
-      if (!minLength || !hasUppercase || !hasLowercase)
-        return setError("Password must be at least 8 characters with upper and lowercase letters");
-
-      if (formControls.password.value !== formControls.passwordConfirmation.value)
-        return setError("Passwords do not match");
-
-      const leaked = await checkPasswordLeak(formControls.password.value);
-      if (leaked) return setError("This password has appeared in data breaches. Choose another.");
-    }
-
     try {
-      const updatedData: any = {};
+      const formData = new FormData();
 
       Object.keys(formControls).forEach(key => {
         const control = formControls[key as keyof FormControls];
 
-        if (key === "icon" || key === "background") {
-          if (control.value !== user[key]) {
-            updatedData[key] = control.value;
-          }
-        } else {
-          if (control.value.trim() !== "" && control.value !== user[key]) {
-            updatedData[key] = control.value;
-          }
+        if (control.value.trim() !== "" && control.value !== user[key]) {
+          formData.append(key, control.value);
         }
       });
 
-      if (formControls.password.value.trim() !== "") {
-        updatedData.password = formControls.password.value;
-      }
+      if (files.icon) formData.append("icon", files.icon);
+      if (files.background) formData.append("background", files.background);
 
       const res = await axios.patch(
         `${apiUrl}/api/auth/update`,
-        updatedData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }
       );
 
       localStorage.setItem("user", JSON.stringify(res.data));
       setUser(res.data);
-      setBg(res.data.background || user.background);
+      setBg(res.data.background || "");
       navigate("/profile");
+
     } catch (err: any) {
       setError(err.response?.data?.message || "Update failed");
     }
@@ -306,10 +279,12 @@ export const Settings = () => {
 
             <div className="row g-3 mb-3">
               <div className="col">
-                <Input {...formControls.icon} onChange={(e: any) => onChangeHandler(e, "icon")} />
+                <label className={`form-label ${styles.title}`}>Icon</label>
+                <input className="form-control" type="file" accept="image/*" onChange={e => handleFile(e, "icon")} />
               </div>
               <div className="col">
-                <Input {...formControls.background} onChange={(e: any) => onChangeHandler(e, "background")} />
+                <label className={`form-label ${styles.title}`}>Background</label>
+                <input className="form-control" type="file" accept="image/*" onChange={e => handleFile(e, "background")} />
               </div>
             </div>
 
