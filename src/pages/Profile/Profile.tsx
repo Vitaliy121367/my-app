@@ -97,7 +97,7 @@ export const Profile = () => {
                     user.icon ||
                     "https://cdn-icons-png.freepik.com/256/12225/12225881.png"
                   }
-                  className={style.avatar}
+                  className={`rounded-circle me-3 ${style.avatar}`}
                   alt="Avatar"
                   style={{ height: "10vh", width: "10wh" }}
                 />
