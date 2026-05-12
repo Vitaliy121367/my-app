@@ -134,7 +134,7 @@ export const AdminPanelUser = () => {
                                         <th scope="row">{(page - 1) * LIMIT + index + 1}</th>
                                         <td>
                                             <img
-                                                src={u.icon || "https://cdn-icons-png.freepik.com/256/12225/12225881.png"}
+                                                src={u.icon || "https://storageavatar0305.blob.core.windows.net/images/constavatar.png"}
                                                 className="rounded-circle"
                                                 width={60}
                                                 height={60}

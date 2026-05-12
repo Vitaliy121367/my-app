@@ -178,7 +178,7 @@ export const Record = () => {
           <img
             src={
               record.userId?.icon ||
-              "https://cdn-icons-png.freepik.com/256/12225/12225881.png"
+              "https://storageavatar0305.blob.core.windows.net/images/constavatar.png"
             }
             className="rounded-circle me-3"
             width="60"
@@ -281,7 +281,7 @@ export const Record = () => {
               <img
                 src={
                   c.fromUserId?.icon ||
-                  "https://cdn-icons-png.freepik.com/256/12225/12225881.png"
+                  "https://storageavatar0305.blob.core.windows.net/images/constavatar.png"
                 }
                 width="40"
                 height="40"

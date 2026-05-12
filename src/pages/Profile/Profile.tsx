@@ -95,7 +95,7 @@ export const Profile = () => {
                 <img
                   src={
                     user.icon ||
-                    "https://cdn-icons-png.freepik.com/256/12225/12225881.png"
+                    "https://storageavatar0305.blob.core.windows.net/images/constavatar.png"
                   }
                   className={`rounded-circle me-3 ${style.avatar}`}
                   alt="Avatar"
