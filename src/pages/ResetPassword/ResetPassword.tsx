@@ -9,7 +9,7 @@ import styles from "../../components/styles.module.css";
 import style from "./ResetPassword.module.css";
 
 export const ResetPassword = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const { token } = useParams();
   const navigate = useNavigate();
 

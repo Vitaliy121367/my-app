@@ -9,7 +9,7 @@ import style from "./Games.module.css";
 
 export const Games = () => {
   const apiUrl =
-    "myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+    "https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
 
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

@@ -30,7 +30,7 @@ type FormControls = {
 };
 
 export const Login = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const navigate = useNavigate();
 
   const [isFormValid, setIsFormValid] = useState(false);

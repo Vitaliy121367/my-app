@@ -9,7 +9,7 @@ import axios from "axios";
 type Platform = "PC" | "Console" | "Phone";
 
 export const AddRecord = () => {
-    const apiUrl = "myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+    const apiUrl = "https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")

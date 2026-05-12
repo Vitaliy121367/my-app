@@ -5,7 +5,7 @@ import style from "./AddGame.module.css";
 import axios from "axios";
 
 export const AddGame = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user") || "{}")

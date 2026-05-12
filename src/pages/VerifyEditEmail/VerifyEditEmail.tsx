@@ -7,7 +7,7 @@ import { Navbar } from "../../components/Navbar/Navbar";
 import { Footer } from "../../components/Footer/Footer";
 
 export const VerifyEditEmail = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const { token } = useParams<{ token: string }>();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const hasRun = useRef(false);

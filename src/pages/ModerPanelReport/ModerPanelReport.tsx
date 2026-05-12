@@ -8,7 +8,7 @@ const LIMIT = 10;
 
 export const ModerPanelReport = () => {
   const apiUrl =
-    "myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+    "https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
 
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

@@ -7,7 +7,7 @@ import style from "./LastLoaded.module.css";
 import axios from "axios";
 
 export const LastLoaded = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const [lastLoaded, setLastLoaded] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

@@ -8,7 +8,7 @@ import { Footer } from "../../components/Footer/Footer";
 import Input from "../../UI/Input/Input";
 
 export const ForgotPassword = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");

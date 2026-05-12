@@ -8,7 +8,7 @@ import style from "./Profile.module.css";
 import Loader from "../../components/Loader/Loader";
 
 export const Profile = () => {
-  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
+  const apiUrl="https://myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const [user, setUser] = useState<any>(null);
   const [records, setRecords] = useState<any[]>([]);
   const [page, setPage] = useState(1);
