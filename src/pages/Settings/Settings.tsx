@@ -45,7 +45,7 @@ type FormControls = {
 };
 
 export const Settings = () => {
-  const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+  const apiUrl = "myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const savedUser = localStorage.getItem("user");
   const token = localStorage.getItem("token");
 

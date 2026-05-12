@@ -8,7 +8,7 @@ import axios from "axios";
 import Loader from "../../components/Loader/Loader";
 
 export const Record = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
   const { id } = useParams<{ id: string }>();
 
   const [record, setRecord] = useState<any>(null);

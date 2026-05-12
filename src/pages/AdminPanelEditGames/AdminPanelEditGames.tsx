@@ -9,7 +9,7 @@ const availablePlatforms = ["Phone", "PC", "Console"];
 const LIMIT = 20;
 
 export const AdminPanelEditGames = () => {
-    const apiUrl = "https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+    const apiUrl = "myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const [games, setGames] = useState<GameType[]>([]);
     const [page, setPage] = useState(1);
     const [pages, setPages] = useState(1);

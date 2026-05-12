@@ -7,7 +7,7 @@ import axios from "axios";
 const LIMIT = 10;
 
 export const ModerPanelRecord = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const [records, setRecords] = useState<RecordType[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

@@ -10,7 +10,7 @@ import style from "./Game.module.css";
 const LIMIT = 10;
 
 export const Game = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const [game, setGame] = useState<any>(null);
     const [records, setRecords] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

@@ -10,7 +10,7 @@ import Loader from "../../components/Loader/Loader";
 type CommentType = "comment" | "report";
 
 export const AddComment = () => {
-  const apiUrl="https://myapi0305-cua6cdb7ghdxgtfk.polandcentral-01.azurewebsites.net";
+  const apiUrl="myfastrunsapi0305-hzekc5edahebbtca.polandcentral-01.azurewebsites.net";
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
